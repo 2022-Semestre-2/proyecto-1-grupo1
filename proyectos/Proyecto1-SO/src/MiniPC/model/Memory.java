@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model;
+package MiniPC.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,7 +77,7 @@ public class Memory {
         
         int j = 0;
         this.allocationIndex = startAllocate;
-        System.out.println(this.allocationIndex);
+        //System.out.println(this.allocationIndex);
         for(int i = startAllocate ; i <instructions.size()+startAllocate; i ++){
             this.registers.add(i, Optional.of(instructions.get(j)));
             j++;

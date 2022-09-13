@@ -2,15 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package view;
+package MiniPC.view;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import controller.CPUController;
-import model.MemoryRegister;
+import MiniPC.controller.PCB;
+import MiniPC.model.MemoryRegister;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -24,14 +24,14 @@ public class CPU_Menu extends javax.swing.JFrame {
     
     int size;
     File file;
-    CPUController cpu;
+    PCB cpu;
     DefaultTableModel model = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int i, int j) {return false;};
     };
     
     
-    CPU_Menu(CPUController cpu, File file) {
+    CPU_Menu(PCB cpu, File file) {
         
         initComponents();
         

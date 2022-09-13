@@ -2,25 +2,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package controller;
+package MiniPC.controller;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
-import model.CPURegister;
-import model.FileLoader;
-import model.Memory;
-import model.MemoryRegister;
-import view.CPU_Menu;
+import MiniPC.model.CPURegister;
+import MiniPC.model.FileLoader;
+import MiniPC.model.Memory;
+import MiniPC.model.MemoryRegister;
+import java.util.Scanner;
 
 
 /**
  *
  * @author ricardosoto
  */
-public class CPUController {
+public class PCB {
     
     
     private final HashMap<Integer,CPURegister> registerAddressMapper = new HashMap<>();
@@ -34,10 +32,12 @@ public class CPUController {
     private FileLoader loader;
     private boolean programFinished = false;
     private final CPURegister ac = new CPURegister(0);
+    //Bandera para el comparador cmp ax, dx. Si son iguales la bandera se pone en true y por ende se usara el comparador
+    private boolean comparatorFlag = false;
     //CPU_Menu menu = new CPU_Menu();
     
     
-    public CPUController(){
+    public PCB(){
         this.registerAddressMapper.put(1, ax);
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
@@ -82,6 +82,9 @@ public class CPUController {
             case 2 -> executeStore(instruction);
             case 4 -> executeSub(instruction);
             case 5 -> executeAdd(instruction);
+            case 6 -> executeInc(instruction);
+            case 7 -> executeDec(instruction);
+            case 8 -> executeSwap(instruction);
             default -> {
             }
          
@@ -128,23 +131,22 @@ public class CPUController {
         this.memory.allocate(loader.getInstrucionSet());
     }
     public void executeAll(String  path, int memSize){
+        this.memory = new Memory(memSize);
+        this.loader =  new FileLoader(path);;                        
+        this.memory.allocate(this.loader.getInstrucionSet());                              
+        if(this.pc ==0 ){
+            this.pc = this.memory.getAllocationIndex();
+        }                                                                
         
-        Memory memory = new Memory(memSize);
-        FileLoader loader = new FileLoader(path);
-        memory.allocate(loader.getInstrucionSet());
-        
-        
-        
-        
-        for(int i = 0; i < memory.getInstructions().size(); i ++){
-            Optional<MemoryRegister> register = memory.getInstructions().get(i);
+        while(this.pc < this.memory.getAllocationIndex()+this.loader.getInstrucionSet().size()){
+            Optional<MemoryRegister> register = memory.getInstructions().get(this.pc);
             MemoryRegister instruction = null;
             if(register.isPresent()){
-                instruction = register.get();
-                this.pc = i;                
+                instruction = register.get();                
             } else {
                 continue;                
             }
+            System.out.println(register.get().getValue());
             
             String result = String.format("%16s", Integer.toBinaryString(instruction.getValue() & 0xFFFF)).replace(' ', '0');
             Integer res = Integer.parseInt(result,2);
@@ -156,7 +158,13 @@ public class CPUController {
                 case 2 -> executeStore(instruction);
                 case 4 -> executeSub(instruction);
                 case 5 -> executeAdd(instruction);
+                case 6 -> executeInc(instruction);
+                case 7 -> executeDec(instruction);
+                case 8 -> executeSwap(instruction);                
+                case 9 -> executeInterruption(instruction);
+                case 10 -> executeJmp(instruction);
                 default -> {
+                    
                 }
             }
             
@@ -165,7 +173,7 @@ public class CPUController {
             
             System.out.println("PC:" + this.pc.toString());
             System.out.println("Binario:" + instruction.toBinaryString());
-            /*
+            
             System.out.println("-------------------------------");
             System.out.println("Ax Value:" + this.ax.getValue());
             System.out.println("Bx Value:" + this.bx.getValue());
@@ -175,7 +183,8 @@ public class CPUController {
             System.out.println("IR:" + this.ir.toString());
             System.out.println("PC:" + this.pc.toString());
             System.out.println("-------------------------------");
-            */
+            this.pc++;
+            
         }
         
         
@@ -183,6 +192,12 @@ public class CPUController {
         
     }
     private void executeMov(MemoryRegister reg){
+        if(reg.getValue()==0){
+            Integer valuereg2 = this.registerAddressMapper.get(reg.getRegisterValue()).getValue();
+            this.registerAddressMapper.get(reg.getAdress()).setValue(valuereg2);
+            return;
+            
+        }
         Integer value = reg.getValue();       
         registerAddressMapper.get(reg.getAdress()).setValue(value);
         
@@ -210,6 +225,68 @@ public class CPUController {
         Integer value = this.registerAddressMapper.get(reg.getAdress()).getValue();
         this.ac.setValue(value+this.ac.getValue());
     }
+    private void executeInc(MemoryRegister reg) {
+        if(reg.getAdress()==0){
+            this.ac.setValue(this.ac.getValue()+1);            
+            
+        }else {
+            Integer value = this.registerAddressMapper.get(reg.getAdress()).getValue();
+            this.registerAddressMapper.get(reg.getAdress()).setValue(value+1);
+        }
+        
+        
+    }
+    private void executeDec(MemoryRegister reg) {
+        if(reg.getAdress()==0){
+            this.ac.setValue(this.ac.getValue()-1);            
+            
+        }else {
+            Integer value = this.registerAddressMapper.get(reg.getAdress()).getValue();
+            this.registerAddressMapper.get(reg.getAdress()).setValue(value-1);
+        }
+        
+        
+    }
+    private void executeSwap(MemoryRegister reg){        
+        Integer valuereg1 = this.registerAddressMapper.get(reg.getAdress()).getValue();
+        Integer valuereg2 = this.registerAddressMapper.get(reg.getRegisterValue()).getValue();
+        
+        this.registerAddressMapper.get(reg.getAdress()).setValue(valuereg2);
+        this.registerAddressMapper.get(reg.getRegisterValue()).setValue(valuereg1);
+
+    }
+    
+    private void executeInterruption(MemoryRegister reg){
+        // valor de la interrupción
+        int value= reg.getValue();
+        switch (value) {                
+            
+            case 9 -> System.out.println(this.dx.getValue());
+            case 10 -> INT10H();
+            
+            default -> {
+                
+            }   
+        }
+        
+    }
+    private void executeJmp(MemoryRegister reg){
+        this.pc = this.pc+reg.getValue();
+                
+    }
+    private void INT10H(){
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object10       
+        String userName = myObj.nextLine();  // Read user input
+        Integer newDxValue = null;
+        try{
+            newDxValue = Integer.parseInt(userName);
+        }catch(NumberFormatException e){
+        }
+        this.dx.setValue(newDxValue);
+        
+    }
+    
+    
     
     
     
