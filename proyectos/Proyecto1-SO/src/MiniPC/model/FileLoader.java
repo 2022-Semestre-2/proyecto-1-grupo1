@@ -83,12 +83,12 @@ public class FileLoader {
         this.instructionMapper.put("swap", 8);         
         this.instructionMapper.put("int", 9);
         this.instructionMapper.put("jmp", 10);
-        this.instructionMapper.put("cmp", 12);
-        this.instructionMapper.put("je", 13);
-        this.instructionMapper.put("jne", 14);
-        this.instructionMapper.put("param", 15);
-        this.instructionMapper.put("push", 16);
-        this.instructionMapper.put("pop", 17);        
+        this.instructionMapper.put("cmp", 11);
+        this.instructionMapper.put("je", 12);
+        this.instructionMapper.put("jne", 13);
+        this.instructionMapper.put("param", 14);
+        this.instructionMapper.put("push", 15);
+        this.instructionMapper.put("pop", 16);        
          
         
         this.registerMapper.put("ax", 1);
@@ -124,18 +124,19 @@ public class FileLoader {
             return false;
             
         }
+        System.out.println(asignation[0].toLowerCase() + " "+ instructionMapper.get(asignation[0].toLowerCase()));
+
         Integer reg = registerMapper.get(asignation[1].toLowerCase());
         try{             
             Integer.parseInt(splitedLine[1].trim());            
         } catch(NumberFormatException e){          
             //Si es un registro, caso swap ax, bx ó mov ax, cx
-            if(registerMapper.get(splitedLine[1].trim().toLowerCase()) != null){
-                
-            } else {
+            if(registerMapper.get(splitedLine[1].trim().toLowerCase())== null){
                 this.errorHandler = new ErrorHandler(linePos,"Asignación incorrecta","El valor de la asignación no es operable.");                
                 return false;
+            } else {
+                
             }
-            
         }
         if(opr==null){
             this.errorHandler = new ErrorHandler(linePos,"Operación no reconocida","La operación en la asignación no es reconocida.");      
@@ -143,7 +144,7 @@ public class FileLoader {
         if(reg==null){
             this.errorHandler = new ErrorHandler(linePos,"Registro inváildo","El registro en la asignación es inválido.");      
         }
-        if(opr != 3 && opr!=8 && opr!=12 && opr!=15){
+        if(opr != 3 && opr!=8 && opr!=11){
             this.errorHandler = new ErrorHandler(linePos,"Operador inválido","El operador no es válido para asignación.");      
             return false;
         }
@@ -160,13 +161,14 @@ public class FileLoader {
             return false;
         }
           //Si es una interrupción
-         if(instructionMapper.get(asignation[0].toLowerCase())==9){
-             
+                  System.out.println(asignation[0].toLowerCase() + " "+ instructionMapper.get(asignation[0].toLowerCase()));
+
+         if(instructionMapper.get(asignation[0].toLowerCase())==9){             
              return this.validInterruption(asignation);
          }
          //Si es un jump
          int inst=instructionMapper.get(asignation[0].toLowerCase());
-         if(inst ==10 || inst==11 || inst==12){             
+         if(inst ==10 || inst==12 || inst==13){             
              return this.validJump(asignation);
          }
          if(asignation.length==1){
@@ -221,7 +223,7 @@ public class FileLoader {
             }
             // En el caso de que sea un JMP
                
-            if(instruction ==10 || instruction==11 || instruction==12){                                              
+            if(instruction ==10 || instruction==12 || instruction==13){                                              
                 register= new MemoryRegister(instruction, Integer.parseInt(splitSpace[1]),0);
                 
                 return register;

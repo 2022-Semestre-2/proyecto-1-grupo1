@@ -163,6 +163,9 @@ public class PCB {
                 case 8 -> executeSwap(instruction);                
                 case 9 -> executeInterruption(instruction);
                 case 10 -> executeJmp(instruction);
+                case 11 -> executeCmp(instruction);
+                case 12 -> executeJe(instruction);
+                case 13 -> executeJne(instruction);
                 default -> {
                     
                 }
@@ -273,6 +276,30 @@ public class PCB {
     private void executeJmp(MemoryRegister reg){
         this.pc = this.pc+reg.getValue();
                 
+    }
+    private void executeCmp(MemoryRegister reg){        
+        
+        this.comparatorFlag = this.registerAddressMapper.get(reg.getAdress()).getValue().equals(reg.getValue());        
+        System.out.println(this.registerAddressMapper.get(reg.getAdress()).getValue()+" "+reg.getValue());
+        
+        //compara los valores, setea la bandera
+    }
+    private void executeJe(MemoryRegister reg){        
+        if(this.comparatorFlag){           
+            
+            executeJmp(reg);
+            this.comparatorFlag = !this.comparatorFlag;
+        }
+        
+    }
+    private void executeJne(MemoryRegister reg){        
+        System.out.println("adsadkskdjaskdk");
+        if(!this.comparatorFlag){
+            
+            
+            executeJmp(reg);
+        }
+        
     }
     private void INT10H(){
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object10       
