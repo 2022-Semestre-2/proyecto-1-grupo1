@@ -4,7 +4,7 @@
  */
 package MiniPC.model;
 
-import java.util.Optional;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,6 +17,8 @@ public class MemoryRegister implements Register{
     private Integer address;
     //Valor de registro, por ejemplo cuando se hace un Mov ax,bx. El valor de registro es el valor de bx y el value es 0
     private Integer registerValue;
+   //Lista de valores, para, el param
+    private ArrayList<Integer> values; 
     private boolean isInterruption = false;
     
     
@@ -25,8 +27,12 @@ public class MemoryRegister implements Register{
         this.operator = operator;
         this.value = value;
     }
-    
-    
+    public ArrayList<Integer>  getValues(){
+        return this.values;
+    }
+    public void setValues(ArrayList<Integer> values){
+        this.values = values;
+    }
 
     public Integer getOperator() {
         return operator;

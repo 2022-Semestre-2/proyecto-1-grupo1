@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -100,13 +101,17 @@ public class FileLoader {
     public String getErrorMessage(){
         return this.errorHandler.returnErrorMesage();
     }
-    private boolean validGrammar(String line, int linePos){
+    private boolean validGrammar(String line, int linePos){        
         String[] comaSplit = line.split(",");        
+        if(instructionMapper.get(comaSplit[0].split(" ")[0].trim())==14){
+            //Validación de Param
+            return this.validParam(comaSplit, linePos);
+        }
         switch (comaSplit.length) {
             case 2:
                 return this.validAsignation(comaSplit,linePos);
             case 1:
-                return this.validOperation(comaSplit,linePos);
+                return this.validOperation(comaSplit,linePos);            
             default:
                 this.errorHandler = new ErrorHandler(linePos,"Sintaxis inválida","La sintaxis no es reconocida.");                
                 return false;
@@ -123,8 +128,7 @@ public class FileLoader {
             this.errorHandler = new ErrorHandler(linePos,"Asignación incorrecta","La sintáxis en la asignación es incorrecta.");                
             return false;
             
-        }
-        System.out.println(asignation[0].toLowerCase() + " "+ instructionMapper.get(asignation[0].toLowerCase()));
+        }        
 
         Integer reg = registerMapper.get(asignation[1].toLowerCase());
         try{             
@@ -164,7 +168,7 @@ public class FileLoader {
                   System.out.println(asignation[0].toLowerCase() + " "+ instructionMapper.get(asignation[0].toLowerCase()));
 
          if(instructionMapper.get(asignation[0].toLowerCase())==9){             
-             return this.validInterruption(asignation);
+             return this.validInterruption(asignation, linePos);
          }
          //Si es un jump
          int inst=instructionMapper.get(asignation[0].toLowerCase());
@@ -179,7 +183,7 @@ public class FileLoader {
         Integer opr = instructionMapper.get(asignation[0].toLowerCase());
         Integer reg = registerMapper.get(asignation[1].toLowerCase());
         if(opr==null){
-            this.errorHandler = new ErrorHandler(linePos,"Operador no reconocido","El operador en la operación no es reonocido.");      
+            this.errorHandler = new ErrorHandler(linePos,"Operador no reconocido","El operador en la operación no es reconocido.");      
         }
         if(reg==null){
             
@@ -229,6 +233,10 @@ public class FileLoader {
                 return register;
                 
             }
+            //Param
+            if(instruction==14){
+                return this.processParam(comaSplit);
+            }
             int address = this.registerMapper.get(splitSpace[1].toLowerCase());
             Integer value = 0;
             
@@ -265,10 +273,11 @@ public class FileLoader {
         }catch(NumberFormatException e){
             
         }
+        
         return false;
     }
         
-    private boolean validInterruption(String[] asignation){
+    private boolean validInterruption(String[] asignation, int linePos){
         Pattern pattern = Pattern.compile("[^h]*h");
         Matcher matcher = pattern.matcher(asignation[1].toLowerCase());
         int count = 0;
@@ -286,12 +295,53 @@ public class FileLoader {
                 
             }
         }
+        this.errorHandler = new ErrorHandler(linePos,"Interrupción incorrecta","La sintáxis de interrupcion es incorrecta");      
 
         
 
         return false;
     }
+    private boolean validParam(String[] comaSplit,int linePos){
+        Integer operation = instructionMapper.get(comaSplit[0].split(" ")[0].trim()); 
+        if(operation==null){
+            return false;
+        }
+        String firstValue = comaSplit[0].split(" ")[1].trim(); 
+        try{
+            Integer.parseInt(firstValue);
+            }catch(NumberFormatException e){
+                return false;
+            }
+        for(int i = 1; i<comaSplit.length; i ++){
+            try{
+                Integer.parseInt(comaSplit[i].trim());
+            }catch(NumberFormatException e){
+                return false;
+            }
+            
+        }
+        return true;        
+    }
         
+    private MemoryRegister processParam(String[] comaSplit){
+        Integer operation = instructionMapper.get(comaSplit[0].split(" ")[0].trim()); 
+        ArrayList<Integer> values = new ArrayList<Integer> ();
+        MemoryRegister reg = new MemoryRegister(operation,0,0);
+        
+        String firstValue = comaSplit[0].split(" ")[1].trim();       
+        values.add(Integer.parseInt(firstValue));
+        for(int i = 1; i<comaSplit.length; i ++){
+            try{
+                values.add(Integer.parseInt(comaSplit[i].trim()));                
+            }catch(NumberFormatException e){
+                
+            }
+            
+        }    
+        
+        reg.setValues(values);
+        return reg;
+    }
     public String getFileDirectory() {
         return fileDirectory;
     }

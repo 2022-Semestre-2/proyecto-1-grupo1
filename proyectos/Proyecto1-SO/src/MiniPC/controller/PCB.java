@@ -11,7 +11,9 @@ import MiniPC.model.CPURegister;
 import MiniPC.model.FileLoader;
 import MiniPC.model.Memory;
 import MiniPC.model.MemoryRegister;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Stack;
 
 
 /**
@@ -34,10 +36,12 @@ public class PCB {
     private final CPURegister ac = new CPURegister(0);
     //Bandera para el comparador cmp ax, dx. Si son iguales la bandera se pone en true y por ende se usara el comparador
     private boolean comparatorFlag = false;
+    //Pila
+    private Stack<Integer> stack = new Stack();    
     //CPU_Menu menu = new CPU_Menu();
     
     
-    public PCB(){
+    public PCB(){        
         this.registerAddressMapper.put(1, ax);
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
@@ -166,6 +170,9 @@ public class PCB {
                 case 11 -> executeCmp(instruction);
                 case 12 -> executeJe(instruction);
                 case 13 -> executeJne(instruction);
+                case 14 -> executeParam(instruction);
+                case 15 -> executePush(instruction);
+                case 16 -> executePop(instruction);
                 default -> {
                     
                 }
@@ -185,6 +192,7 @@ public class PCB {
             System.out.println("AC Value:" + this.ac.getValue());
             System.out.println("IR:" + this.ir.toString());
             System.out.println("PC:" + this.pc.toString());
+            System.out.println("Pila:" + Arrays.asList(this.stack));            
             System.out.println("-------------------------------");
             this.pc++;
             
@@ -293,12 +301,28 @@ public class PCB {
         
     }
     private void executeJne(MemoryRegister reg){        
-        System.out.println("adsadkskdjaskdk");
+        
         if(!this.comparatorFlag){
             
             
             executeJmp(reg);
         }
+        
+    }
+    private void executeParam(MemoryRegister instruction){
+        for(int value: instruction.getValues()){
+            stack.push(value);
+        }
+        
+    }
+    private void executePush(MemoryRegister instruction){
+        this.stack.push(registerAddressMapper.get(instruction.getAdress()).getValue());
+    }
+    
+    private void executePop(MemoryRegister instruction){
+        //Se setea el valor
+        this.registerAddressMapper.get(instruction.getAdress()).setValue(this.stack.pop());
+        
         
     }
     private void INT10H(){
