@@ -5,12 +5,18 @@
 package view;
 
 import java.awt.Component;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 /**
  *
  * @author Administrador
@@ -18,21 +24,35 @@ import javax.swing.table.TableCellRenderer;
 public final class ProcessManager extends javax.swing.JFrame {
 
     
-    static int memorySize = 128;
-    static int diskSize = 512;
+    int memorySize = 128;
+    int diskSize = 512;
     private JTable jTableCPU2;
+    int keys = 0;
     
     /**
      * Creates new form ProcessManager
      */
     public ProcessManager() {
         initComponents();
+        loadJSONfile();
         loadMemoryTable();
         loadDiskTable();
         loadProcessTable();
         loadCPU2Table();
     }
     
+    
+    
+    public void loadJSONfile() {
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject obj = (JSONObject)parser.parse(new FileReader("C:\\Users\\Administrador\\OneDrive\\II Semestre, 2022\\Principios de Sistemas Operativos\\proyecto-1-grupo1\\proyectos\\Proyecto1-SO\\src\\MiniPC\\view\\Config.json"));
+            this.memorySize = (int) (long)obj.get("MemorySize");
+            this.diskSize = (int) (long)obj.get("DiskSize");
+        } catch (Exception ex) {
+            System.out.println("Exception: "+ ex.getMessage());
+        }
+    }
     
     public void loadMemoryTable() {
         DefaultTableModel model = new DefaultTableModel() {
@@ -189,6 +209,7 @@ public final class ProcessManager extends javax.swing.JFrame {
         jInputKeyboard = new javax.swing.JTextField();
         btmLoad = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
+        btnConfig = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Proyecto1-SO");
@@ -331,7 +352,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                         .addComponent(txtIR1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtAC1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         jTableDisk.setModel(new javax.swing.table.DefaultTableModel(
@@ -460,7 +481,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                         .addComponent(txtIR2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtAC2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         jTableMemory.setModel(new javax.swing.table.DefaultTableModel(
@@ -481,16 +502,24 @@ public final class ProcessManager extends javax.swing.JFrame {
 
         jTableKeyboard.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},
+                {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},
             },
             new String [] {
                 ""
             }
         ));
         jScrollPane6.setViewportView(jTableKeyboard);
+
+        jInputKeyboard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jInputKeyboardActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -499,12 +528,14 @@ public final class ProcessManager extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jInputKeyboard, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jInputKeyboard)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -530,6 +561,14 @@ public final class ProcessManager extends javax.swing.JFrame {
         jLabel18.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
         jLabel18.setText("Pantalla");
 
+        btnConfig.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        btnConfig.setText("Configuración");
+        btnConfig.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfigActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -548,7 +587,8 @@ public final class ProcessManager extends javax.swing.JFrame {
                                     .addComponent(btnStepByStep)
                                     .addComponent(btnStats)
                                     .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnExecute, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(btnExecute, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -588,15 +628,17 @@ public final class ProcessManager extends javax.swing.JFrame {
                         .addComponent(btnExecute, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnStats, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -618,6 +660,17 @@ public final class ProcessManager extends javax.swing.JFrame {
         this.file = loadedFile;
         */
     }//GEN-LAST:event_btmLoadActionPerformed
+
+    private void jInputKeyboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jInputKeyboardActionPerformed
+        System.out.println(evt.getActionCommand());
+        jInputKeyboard.setText("");
+        jTableKeyboard.setValueAt(evt.getActionCommand(), this.keys++, 0);
+    }//GEN-LAST:event_jInputKeyboardActionPerformed
+
+    private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
+        int MemorySize = Integer.parseInt(JOptionPane.showInputDialog("Digite el tamaño de la memoria"));
+        int DiskSize = Integer.parseInt(JOptionPane.showInputDialog("Digite el tamaño del disco"));
+    }//GEN-LAST:event_btnConfigActionPerformed
 
     
     /**
@@ -659,6 +712,7 @@ public final class ProcessManager extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btmLoad;
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnConfig;
     private javax.swing.JButton btnExecute;
     private javax.swing.JButton btnStats;
     private javax.swing.JButton btnStepByStep;

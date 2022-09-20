@@ -38,7 +38,7 @@ public class MiniPC {
         */
         
         
-        pcb.executeAll("/Users/ricardosoto/Downloads/tsotest/proyecto-1-grupo1/proyectos/Proyecto1-SO/test/asm1.asm", 200);
+        pcb.executeAll("C:\\Users\\Administrador\\OneDrive\\II Semestre, 2022\\Principios de Sistemas Operativos\\proyecto-1-grupo1\\proyectos\\Proyecto1-SO\\test\\asm1.asm", 200);
         
         
        
