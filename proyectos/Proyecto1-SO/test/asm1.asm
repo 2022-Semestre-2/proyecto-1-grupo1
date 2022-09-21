@@ -1,15 +1,18 @@
 mov ax, 10
 mov bx,20
 swap bx, ax
+mov ax, 10
 load ax 
 store bx
 jmp 3
 inc dx
-int 9h
+int 09h
 sub ax
 inc cx
+inc
 cmp cx,13
-jne -3
-param 1,2,3
+jne -4
+param 1,4,3
 pop dx
 push ax
+push cx

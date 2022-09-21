@@ -258,7 +258,7 @@ public class PCB {
         
         
     }
-    private void executeSwap(MemoryRegister reg){        
+    private void executeSwap(MemoryRegister reg){   
         Integer valuereg1 = this.registerAddressMapper.get(reg.getAdress()).getValue();
         Integer valuereg2 = this.registerAddressMapper.get(reg.getRegisterValue()).getValue();
         

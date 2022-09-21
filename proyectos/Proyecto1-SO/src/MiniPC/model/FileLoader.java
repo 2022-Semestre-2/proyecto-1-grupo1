@@ -101,21 +101,33 @@ public class FileLoader {
     public String getErrorMessage(){
         return this.errorHandler.returnErrorMesage();
     }
-    private boolean validGrammar(String line, int linePos){        
-        String[] comaSplit = line.split(",");        
-        if(instructionMapper.get(comaSplit[0].split(" ")[0].trim())==14){
-            //Validación de Param
-            return this.validParam(comaSplit, linePos);
+    private boolean validGrammar(String line, int linePos){   
+        if(line.isBlank()){
+            this.errorHandler = new ErrorHandler(linePos,"Linea vacía","La línea se encuentra vacía, no se puede procesar.");                
+            return false;
         }
+        Integer opr = instructionMapper.get(line.split(" ")[0].toLowerCase());
+        if(opr!=null && (line.split(" ").length <2)){
+            if(opr!= 7 && opr!=6){
+                this.errorHandler = new ErrorHandler(linePos,"Sintaxis inválida","La sintaxis no es reconocida.");                
+                return false;
+            }            
+        }
+        String[] comaSplit = line.split(",");                
         switch (comaSplit.length) {
             case 2:
                 return this.validAsignation(comaSplit,linePos);
-            case 1:
+            case 1:                
                 return this.validOperation(comaSplit,linePos);            
-            default:
+            default:                
+                if(comaSplit.length>2 && instructionMapper.get(comaSplit[0].split(" ")[0].trim())==14){
+                   //Validación de Param                   
+                    return this.validParam(comaSplit, linePos);
+                }
                 this.errorHandler = new ErrorHandler(linePos,"Sintaxis inválida","La sintaxis no es reconocida.");                
                 return false;
         }
+        
         
         
     }
@@ -132,8 +144,13 @@ public class FileLoader {
 
         Integer reg = registerMapper.get(asignation[1].toLowerCase());
         try{             
-            Integer.parseInt(splitedLine[1].trim());            
+            Integer.parseInt(splitedLine[1].trim());                        
+            if(opr==8){
+                this.errorHandler = new ErrorHandler(linePos,"Error en el swap","uno de los registros del swap es inválido.");                
+                return false;
+            }
         } catch(NumberFormatException e){          
+            
             //Si es un registro, caso swap ax, bx ó mov ax, cx
             if(registerMapper.get(splitedLine[1].trim().toLowerCase())== null){
                 this.errorHandler = new ErrorHandler(linePos,"Asignación incorrecta","El valor de la asignación no es operable.");                
@@ -158,30 +175,52 @@ public class FileLoader {
               
     }
     private boolean validOperation(String[] splitedLine,int linePos){
-         String[] asignation = splitedLine[0].split(" ");
-         
+         String[] asignation = splitedLine[0].split(" ");         
+         if(asignation.length == 1){
+             Integer opr = instructionMapper.get(asignation[0].toLowerCase());
+             //Validar que sea un inc
+             if(opr!= null && (opr!= 6 && opr !=7)){
+                 this.errorHandler = new ErrorHandler(linePos,"Operación incorrecta","La sintáxis en la operación es incorrecta.");                
+                 return false;
+             } else {
+                 if(opr==null){
+                     this.errorHandler = new ErrorHandler(linePos,"Operación incorrecta","La sintáxis en la operación es incorrecta.");                
+                     return false;
+                 }
+                 return true;
+             }
+         }
           if(asignation.length < 1 || asignation.length >2){
               this.errorHandler = new ErrorHandler(linePos,"Operación incorrecta","La sintáxis en la operación es incorrecta.");                
             return false;
         }
           //Si es una interrupción
-                  System.out.println(asignation[0].toLowerCase() + " "+ instructionMapper.get(asignation[0].toLowerCase()));
+          System.out.println(asignation[0].toLowerCase() + " "+ instructionMapper.get(asignation[0].toLowerCase()));
 
-         if(instructionMapper.get(asignation[0].toLowerCase())==9){             
-             return this.validInterruption(asignation, linePos);
+         Integer inst=instructionMapper.get(asignation[0].toLowerCase());
+         if((inst!=null )&&( inst ==10 || inst==12 || inst==13)){             
+             return this.validJump(asignation,linePos);
+         }
+         
+         
+        Integer opr = instructionMapper.get(asignation[0].toLowerCase());
+        if(opr==null){
+            this.errorHandler = new ErrorHandler(linePos,"Operador no reconocido","El operador en la operación no es reconocido.");      
+            return false;
+        }
+        Integer reg = registerMapper.get(asignation[1].toLowerCase());
+        
+        if(opr!= null && instructionMapper.get(asignation[0].toLowerCase())==9){             
+             return this.validInterruption(asignation, linePos);             
          }
          //Si es un jump
-         int inst=instructionMapper.get(asignation[0].toLowerCase());
-         if(inst ==10 || inst==12 || inst==13){             
-             return this.validJump(asignation);
-         }
+         
          if(asignation.length==1){
              return true;
          }
         
           
-        Integer opr = instructionMapper.get(asignation[0].toLowerCase());
-        Integer reg = registerMapper.get(asignation[1].toLowerCase());
+        
         if(opr==null){
             this.errorHandler = new ErrorHandler(linePos,"Operador no reconocido","El operador en la operación no es reconocido.");      
         }
@@ -266,14 +305,14 @@ public class FileLoader {
                
         
     }
-    private boolean validJump(String[] asignation){
+    private boolean validJump(String[] asignation,int linePos){
         try{
             Integer.parseInt(asignation[1].trim());
             return true;
-        }catch(NumberFormatException e){
+        }catch(NumberFormatException | ArrayIndexOutOfBoundsException  e){
             
         }
-        
+        this.errorHandler = new ErrorHandler(linePos,"Error en estructura de JMP/JNE/JE","Sintáxis inválida");      
         return false;
     }
         
@@ -304,18 +343,21 @@ public class FileLoader {
     private boolean validParam(String[] comaSplit,int linePos){
         Integer operation = instructionMapper.get(comaSplit[0].split(" ")[0].trim()); 
         if(operation==null){
+            this.errorHandler = new ErrorHandler(linePos,"PARAM","La sintáxis de la instrucción PARAM es incorrecta");      
             return false;
         }
         String firstValue = comaSplit[0].split(" ")[1].trim(); 
         try{
             Integer.parseInt(firstValue);
             }catch(NumberFormatException e){
+                this.errorHandler = new ErrorHandler(linePos,"Error en el dato del PARAM","Solo se permiten datos enteros");      
                 return false;
             }
         for(int i = 1; i<comaSplit.length; i ++){
             try{
                 Integer.parseInt(comaSplit[i].trim());
             }catch(NumberFormatException e){
+                this.errorHandler = new ErrorHandler(linePos,"Error en el dato del PARAM","Solo se permiten datos enteros");      
                 return false;
             }
             
