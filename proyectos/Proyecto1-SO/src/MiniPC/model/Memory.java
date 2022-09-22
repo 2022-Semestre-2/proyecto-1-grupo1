@@ -15,10 +15,11 @@ import java.util.Random;
  */
 public class Memory {
     private int size;    
-    private ArrayList<Optional<MemoryRegister>> registers;
+    private ArrayList<Optional<MemoryRegister>> registers;    
     private final int START_INDEX = 10;
     private int allocationIndex = 0;
     private int allocatedMemorySize = 0; 
+    private int currentIndex = 0;
     
     
     public Memory(int size){
@@ -48,6 +49,14 @@ public class Memory {
             }
         }
         return false;
+        
+    }
+    public void allocatePCB(PCB pcb){
+        ArrayList<Integer> pcbData = pcb.getPCBData();
+        ArrayList<MemoryRegister> instructions = pcb.getLoader().getInstrucionSet();
+        
+        
+        
         
     }
     

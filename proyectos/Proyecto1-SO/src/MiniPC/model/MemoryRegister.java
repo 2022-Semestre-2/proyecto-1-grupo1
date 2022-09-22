@@ -20,7 +20,7 @@ public class MemoryRegister implements Register{
    //Lista de valores, para, el param
     private ArrayList<Integer> values; 
     private boolean isInterruption = false;
-    
+    private Integer totalValue;
     
     public MemoryRegister(Integer operator,Integer value, Integer address){
         this.address = address;

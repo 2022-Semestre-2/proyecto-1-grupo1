@@ -6,9 +6,7 @@ package MiniPC;
 
 import MiniPC.controller.PCController;
 import MiniPC.model.PCB;
-import MiniPC.view.ProcessManager;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Date;
 
 /**
  *
@@ -45,6 +43,7 @@ public class MiniPC {
         */
         
         PCController c = new PCController();                          
+        
        // pcb.executeAll("test/asm1.asm", 200);
        /**
         * Estados; nuevo, preparado, ejecución, en espera, finalizado
@@ -55,7 +54,18 @@ public class MiniPC {
  Información contable; el cpu donde se está ejecutando, tiempo de inicio, tiempo empleado.
  Información del estado de E/S; lista de archivos abiertos 
         */
+       String a = "CPU1";
+       String k = "";
+       for(int i = 0; i < a.toCharArray().length; i ++){
+           k+=Integer.toBinaryString(a.toCharArray()[i]);
+           
+       }
+       System.out.println(k);
+       int d = Integer.parseInt(k, 2);
+       System.out.println(Integer.toBinaryString(d));
+       System.out.println(new Date().getTime());
        
+               
         
         
         

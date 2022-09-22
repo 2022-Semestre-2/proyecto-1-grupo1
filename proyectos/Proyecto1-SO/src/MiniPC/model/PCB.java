@@ -7,11 +7,8 @@ package MiniPC.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
-import MiniPC.model.CPURegister;
-import MiniPC.model.FileLoader;
-import MiniPC.model.Memory;
-import MiniPC.model.MemoryRegister;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -22,18 +19,50 @@ import java.util.Stack;
  */
 public class PCB {
     
-    
+         /** Estados; nuevo, preparado, ejecución, en espera, finalizado
+ Contador del programa (ubicación del programa cargado en memoria)
+* 
+ Registros AC, AX, BX, CX, DX
+ Información de la pila: definir tamaño de 5, y tomar en cuenta error de desbordamiento
+ Información contable; el cpu donde se está ejecutando, tiempo de inicio, tiempo empleado.
+ Información del estado de E/S; lista de archivos abiertos */
+    //Formato BPC:
+    /**
+     * STATUS
+     * AC
+     * AX
+     * BX
+     * CX
+     * DX
+     * STACK VALUE 1
+     * STACK VALUE 2
+     * STACK VALUE 3
+     * STACK VALUE 4
+     * STACK VALUE 5
+     * CPU1 // Puede ser 1 o 2, se guarda como string
+     * STARTTIME
+     * ELAPSEDTIME
+     * Instrucción1
+     * Instrucción2
+     * ....
+     * ....
+     * Instrucción N
+     */
     private final HashMap<Integer,CPURegister> registerAddressMapper = new HashMap<>();
     private final CPURegister ax = new CPURegister(0);
     private final CPURegister bx = new CPURegister(0);
     private final CPURegister cx = new CPURegister(0);
     private final CPURegister dx = new CPURegister(0); 
+    private final CPURegister ac = new CPURegister(0);    
     private Integer ir =0;
     private Integer pc =0;
     private Memory memory;
+    private final int STACKCAPACITY= 5;
     private FileLoader loader;
-    private boolean programFinished = false;
-    private final CPURegister ac = new CPURegister(0);
+    private String currentCPU;
+    private String status;    
+    
+    private boolean programFinished = false;   
     //Bandera para el comparador cmp ax, dx. Si son iguales la bandera se pone en true y por ende se usara el comparador
     private boolean comparatorFlag = false;
     //Pila
@@ -45,13 +74,66 @@ public class PCB {
         this.registerAddressMapper.put(1, ax);
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
-        this.registerAddressMapper.put(4, dx);
+        this.registerAddressMapper.put(4, dx);        
                 
         
     }
     
     
-    
+    public ArrayList<Integer> getPCBData(){
+        //Convierte todo a Entero, binario y lo envía en una lista para guardar en memoria
+        ArrayList<Integer> returnArr = new ArrayList<Integer>();
+        String statusParse = this.status;
+        String kint = "";
+        for(int i = 0; i < statusParse.toCharArray().length; i ++){
+           kint+=Integer.toBinaryString(statusParse.toCharArray()[i]);          
+       }
+        returnArr.add(Integer.parseInt(kint,2));
+        returnArr.add(this.ac.getValue());
+        returnArr.add(this.ax.getValue());
+        returnArr.add(this.bx.getValue());
+        returnArr.add(this.cx.getValue());
+        returnArr.add(this.dx.getValue());
+        for(int i = 0 ; i < this.STACKCAPACITY; i ++){
+            if(stack.get(i)!=null){
+                returnArr.add(stack.get(i));
+            }else{
+                returnArr.add(0);
+            }                        
+        }
+        String cpuCurr = this.currentCPU;
+        String cpuToBinary = "";
+        for(int i = 0; i < cpuCurr.toCharArray().length; i ++){
+           cpuToBinary+=Integer.toBinaryString(cpuCurr.toCharArray()[i]);          
+       }
+        returnArr.add(Integer.parseInt(cpuToBinary,2));
+        Long time = new Date().getTime();
+        returnArr.add(time.intValue());
+        //el tiempo recorrido se agrega cuando se termine el proceso
+        returnArr.add(time.intValue());
+        
+        return null;
+     /** STATUS
+     * AC
+     * AX
+     * BX
+     * CX
+     * DX
+     * STACK VALUE 1
+     * STACK VALUE 2
+     * STACK VALUE 3
+     * STACK VALUE 4
+     * STACK VALUE 5
+     * CPU1 // Puede ser 1 o 2, se guarda como string
+     * STARTTIME
+     * ELAPSEDTIME
+     * Instrucción1
+     * Instrucción2
+     * ....
+     * ....
+     * Instrucción N
+     */
+    }
     public Memory getMemory(){
         return this.memory;
     }
