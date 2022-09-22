@@ -4,8 +4,11 @@
  */
 package MiniPC;
 
-import MiniPC.controller.PCB;
-import java.util.Arrays;
+import MiniPC.controller.PCController;
+import MiniPC.model.PCB;
+import MiniPC.view.ProcessManager;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  *
@@ -19,9 +22,13 @@ public class MiniPC {
     public static void main(String[] args) {
         
         
+        
+        
         //new Main_Menu().setVisible(true);
         PCB pcb = new PCB();
-        //pcb.setCPUMemory("/Users/ricardosoto/downloads/tso1/asm1.asm", 200);
+        
+        //pcb.setCPUMemory("test/asm1.asm", 200);
+        
         
         
         
@@ -37,11 +44,18 @@ public class MiniPC {
         }
         */
         
-        
-        pcb.executeAll("test/asm1.asm", 200);
-        if(pcb.getLoader().getCountErrors() !=0){
-            System.out.println(pcb.getLoader().getErrorMessage());
-        }
+        PCController c = new PCController();                          
+       // pcb.executeAll("test/asm1.asm", 200);
+       /**
+        * Estados; nuevo, preparado, ejecución, en espera, finalizado
+ Contador del programa (ubicación del programa cargado en memoria)
+* 10
+ Registros AC, AX, BX, CX, DX
+ Información de la pila: definir tamaño de 5, y tomar en cuenta error de desbordamiento
+ Información contable; el cpu donde se está ejecutando, tiempo de inicio, tiempo empleado.
+ Información del estado de E/S; lista de archivos abiertos 
+        */
+       
         
         
         

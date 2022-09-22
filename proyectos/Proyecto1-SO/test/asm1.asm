@@ -10,9 +10,10 @@ int 09h
 sub ax
 inc cx
 inc
-cmp cx,13
+cmp cx,2
 jne -4
 param 1,4,3
 pop dx
+dec
 push ax
 push cx

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package MiniPC.controller;
+package MiniPC.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,15 +81,23 @@ public class PCB {
 
         this.ir = Integer.parseInt(instruction.getOperator().toString() + instruction.getAdress().toString() + res.toString());
         switch (instruction.getOperator()) {                
-            case 3 -> executeMov(instruction);
-            case 1 -> executeLoad(instruction);
-            case 2 -> executeStore(instruction);
-            case 4 -> executeSub(instruction);
-            case 5 -> executeAdd(instruction);
-            case 6 -> executeInc(instruction);
-            case 7 -> executeDec(instruction);
-            case 8 -> executeSwap(instruction);
-            default -> {
+             case 3 -> executeMov(instruction);
+                case 1 -> executeLoad(instruction);
+                case 2 -> executeStore(instruction);
+                case 4 -> executeSub(instruction);
+                case 5 -> executeAdd(instruction);
+                case 6 -> executeInc(instruction);
+                case 7 -> executeDec(instruction);
+                case 8 -> executeSwap(instruction);                
+                case 9 -> executeInterruption(instruction);
+                case 10 -> executeJmp(instruction);
+                case 11 -> executeCmp(instruction);
+                case 12 -> executeJe(instruction);
+                case 13 -> executeJne(instruction);
+                case 14 -> executeParam(instruction);
+                case 15 -> executePush(instruction);
+                case 16 -> executePop(instruction);
+                default -> {
             }
          
         }
@@ -114,6 +122,7 @@ public class PCB {
             System.out.println("AC Value:" + this.ac.getValue());
             System.out.println("IR:" + this.ir.toString());
             System.out.println("PC:" + this.pc.toString());
+            System.out.println("Pila:" + Arrays.asList(this.stack));            
             System.out.println("Binario:" + instruction.toBinaryString());
             System.out.println("-------------------------------");
            this.pc++;
@@ -127,12 +136,15 @@ public class PCB {
             
             
     }
+    public int getPCBinstrucctionSize(){
+        return this.memory.getAllocationIndex()+this.loader.getInstrucionSet().size();
+    }
         
     
     public void setCPUMemory(String  path, int memSize){
         this.memory = new Memory(memSize);
         this.loader = new FileLoader(path);        
-        this.memory.allocate(loader.getInstrucionSet());
+            this.memory.allocate(loader.getInstrucionSet());
     }
     public void executeAll(String  path, int memSize){
         this.memory = new Memory(memSize);

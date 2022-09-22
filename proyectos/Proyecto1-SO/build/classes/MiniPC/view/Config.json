@@ -1,5 +1,5 @@
 {
-    "MemorySize": 10,
-    "DiskSize": 14,
+    "MemorySize": 128000,
+    "DiskSize": 512000,
     "Stack": 5
 }

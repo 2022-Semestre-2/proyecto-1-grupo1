@@ -26,8 +26,7 @@ public class FileLoader {
     ArrayList<String> instructions;
     HashMap<String,Integer> registerMapper;
     int countErrors = 0;
-    private ErrorHandler errorHandler;
-    
+    private ErrorHandler errorHandler;    
     public FileLoader(String path){       
   
         this.loadMapper();
@@ -107,12 +106,17 @@ public class FileLoader {
             return false;
         }
         Integer opr = instructionMapper.get(line.split(" ")[0].toLowerCase());
-        if(opr!=null && (line.split(" ").length <2)){
+        if(opr==null){
+            this.errorHandler = new ErrorHandler(linePos,"Sintaxis inválida","La sintaxis no es reconocida.");                
+            return false;
+        }
+        if(line.split(" ").length <2){
             if(opr!= 7 && opr!=6){
                 this.errorHandler = new ErrorHandler(linePos,"Sintaxis inválida","La sintaxis no es reconocida.");                
                 return false;
             }            
-        }
+        } 
+        
         String[] comaSplit = line.split(",");                
         switch (comaSplit.length) {
             case 2:

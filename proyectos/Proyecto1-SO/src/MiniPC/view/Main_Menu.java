@@ -5,7 +5,7 @@
 package MiniPC.view;
 
 import java.io.File;
-import MiniPC.controller.PCB;
+import MiniPC.model.PCB;
 import MiniPC.model.FileLoader;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;

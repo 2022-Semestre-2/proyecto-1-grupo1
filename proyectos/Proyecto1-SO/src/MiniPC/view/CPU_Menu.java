@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import MiniPC.controller.PCB;
+import MiniPC.model.PCB;
 import MiniPC.model.MemoryRegister;
 import java.util.Optional;
 import javax.swing.JOptionPane;
