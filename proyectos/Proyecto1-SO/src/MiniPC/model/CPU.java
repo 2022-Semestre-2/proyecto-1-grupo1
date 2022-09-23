@@ -27,7 +27,10 @@ public class CPU {
     }
     public void executeInstruction(){
         if(this.processQueue.isEmpty()){
-            this.currentPcbRegistersStatus.clear();
+            if(this.currentPcbRegistersStatus!=null && !this.currentPcbRegistersStatus.isEmpty()){
+                this.currentPcbRegistersStatus.clear();
+            }
+            
             return;
         }
         if(this.currentPcb.programFinished()){            

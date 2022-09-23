@@ -335,7 +335,7 @@ public final class ProcessManager extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Proyecto1-SO");
         setBackground(java.awt.Color.blue);
-        setExtendedState(MAXIMIZED_BOTH);
+        setExtendedState(0);
 
         btnClear.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/clean.png"))); // NOI18N

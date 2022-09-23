@@ -190,7 +190,7 @@ public class PCController {
             list.add(this.pc.toString());
         */
         ArrayList<String> infoBPC = cpu.getPCBRegisterInfo();
-        if(infoBPC.isEmpty()){return;}
+        if(infoBPC== null || infoBPC.isEmpty()){return;}
         javax.swing.JLabel[] labels = this.app.getTextLabelsCpu(cpu.toSring());
         for(int i =0 ; i < 7 ; i ++){
             
