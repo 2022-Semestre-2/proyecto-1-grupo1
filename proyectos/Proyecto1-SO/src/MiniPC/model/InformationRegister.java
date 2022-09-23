@@ -8,16 +8,13 @@ package MiniPC.model;
  *
  * @author ricardosoto
  */
-public class CPURegister implements Register{
+public class InformationRegister implements Register {
     private Integer value;
-    
-    public CPURegister(Integer value){
-        this.value = value;
-    }
 
     @Override
     public void setValue(Integer value) {
         this.value = value;
+        
     }
 
     @Override
@@ -33,6 +30,5 @@ public class CPURegister implements Register{
         
         return ms;
     }
-        
     
 }

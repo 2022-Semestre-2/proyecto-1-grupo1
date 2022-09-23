@@ -99,7 +99,9 @@ public final class ProcessManager extends javax.swing.JFrame {
         
         
     }
-    
+    public JTable getJTableMemory(){
+        return this.jTableMemory;
+    }
     public JTable[] getExecutionTables(){
         JTable[] tables= {this.jTableProcessExecution,this.jTableProcessExecution1};
         return tables;
@@ -117,6 +119,9 @@ public final class ProcessManager extends javax.swing.JFrame {
         } catch (Exception ex) {
             System.out.println("Exception: "+ ex.getMessage());
         }
+    }
+    public int getMemSize(){
+        return this.memorySize;
     }
     
     public void loadMemoryTable() {

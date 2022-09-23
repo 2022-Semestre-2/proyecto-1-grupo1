@@ -11,4 +11,5 @@ package MiniPC.model;
 public interface Register {
     void setValue(Integer value);
     Integer getValue();
+    String toBinaryString();
 }

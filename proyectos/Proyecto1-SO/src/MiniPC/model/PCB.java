@@ -78,6 +78,17 @@ public class PCB {
                 
         
     }
+     public PCB(String status, String currentCPU){        
+         this.status = status;
+         this.currentCPU = currentCPU;
+        this.registerAddressMapper.put(1, ax);
+        this.registerAddressMapper.put(2, bx);
+        this.registerAddressMapper.put(3, cx);
+        this.registerAddressMapper.put(4, dx);        
+                
+        
+    }
+     
     
     
     public ArrayList<Integer> getPCBData(){
@@ -88,16 +99,18 @@ public class PCB {
         for(int i = 0; i < statusParse.toCharArray().length; i ++){
            kint+=Integer.toBinaryString(statusParse.toCharArray()[i]);          
        }
-        returnArr.add(Integer.parseInt(kint,2));
+        Long a = Long.parseLong(kint,2);
+        
+        returnArr.add(a.intValue());
         returnArr.add(this.ac.getValue());
         returnArr.add(this.ax.getValue());
         returnArr.add(this.bx.getValue());
         returnArr.add(this.cx.getValue());
         returnArr.add(this.dx.getValue());
         for(int i = 0 ; i < this.STACKCAPACITY; i ++){
-            if(stack.get(i)!=null){
+            try{               
                 returnArr.add(stack.get(i));
-            }else{
+            }catch(ArrayIndexOutOfBoundsException e){
                 returnArr.add(0);
             }                        
         }
@@ -109,10 +122,10 @@ public class PCB {
         returnArr.add(Integer.parseInt(cpuToBinary,2));
         Long time = new Date().getTime();
         returnArr.add(time.intValue());
-        //el tiempo recorrido se agrega cuando se termine el proceso
+        //el tiempo recorrido se agrega cuando se termine el 
         returnArr.add(time.intValue());
         
-        return null;
+        return returnArr;
      /** STATUS
      * AC
      * AX
@@ -147,17 +160,18 @@ public class PCB {
     }
     
     
-    
+    public void setMemory(Memory mem){
+        this.memory= mem;
+    }
+    public void setLoader(String file){
+        this.loader = new FileLoader(file);
+    }
     
     //Ejecuta la instruccion segun el PC (una a una)
-    public ArrayList<String> executeInstruction(){
-        if(this.pc ==0 ){
-            this.pc = this.memory.getAllocationIndex();
-        }
-        
-        Optional<MemoryRegister> register = memory.getInstructions().get(this.pc);
-      
-        MemoryRegister instruction = register.get();
+    public ArrayList<String> executeInstruction(){        
+        Optional<Register> register = memory.getInstructions().get(this.pc);     
+        System.out.println("PC:" + this.pc.toString());
+        MemoryRegister instruction = (MemoryRegister)register.get();
         String result = String.format("%16s", Integer.toBinaryString(instruction.getValue() & 0xFFFF)).replace(' ', '0');
         Integer res = Integer.parseInt(result,2);
 
@@ -196,6 +210,7 @@ public class PCB {
             
             list.add(this.pc.toString());
             list.add(instruction.toBinaryString());
+            /**
                 System.out.println("-------------------------------");
             System.out.println("Ax Value:" + this.ax.getValue());
             System.out.println("Bx Value:" + this.bx.getValue());
@@ -206,8 +221,10 @@ public class PCB {
             System.out.println("PC:" + this.pc.toString());
             System.out.println("Pila:" + Arrays.asList(this.stack));            
             System.out.println("Binario:" + instruction.toBinaryString());
-            System.out.println("-------------------------------");
-           this.pc++;
+            System.out.println("-------------------------------");           
+           */
+            
+            this.pc++;
             
         
             
@@ -219,9 +236,12 @@ public class PCB {
             
     }
     public int getPCBinstrucctionSize(){
-        return this.memory.getAllocationIndex()+this.loader.getInstrucionSet().size();
+        return this.loader.getInstrucionSet().size();
     }
         
+    public void setProgramCounter(int pc){
+        this.pc = pc;    
+    }
     
     public void setCPUMemory(String  path, int memSize){
         this.memory = new Memory(memSize);
@@ -229,18 +249,16 @@ public class PCB {
             this.memory.allocate(loader.getInstrucionSet());
     }
     public void executeAll(String  path, int memSize){
-        this.memory = new Memory(memSize);
-        this.loader =  new FileLoader(path);;                        
-        this.memory.allocate(this.loader.getInstrucionSet());                              
-        if(this.pc ==0 ){
-            this.pc = this.memory.getAllocationIndex();
-        }                                                                
+        //this.memory = new Memory(memSize);
+        //this.loader =  new FileLoader(path);;                        
+        //this.memory.allocate(this.loader.getInstrucionSet());                              
+                                                        
         
         while(this.pc < this.memory.getAllocationIndex()+this.loader.getInstrucionSet().size()){
-            Optional<MemoryRegister> register = memory.getInstructions().get(this.pc);
+            Optional<Register> register = memory.getInstructions().get(this.pc);
             MemoryRegister instruction = null;
             if(register.isPresent()){
-                instruction = register.get();                
+                instruction = (MemoryRegister)register.get();                
             } else {
                 continue;                
             }

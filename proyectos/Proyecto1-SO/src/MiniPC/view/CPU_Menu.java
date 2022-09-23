@@ -4,13 +4,14 @@
  */
 package MiniPC.view;
 
+import MiniPC.model.MemoryRegister;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import MiniPC.model.PCB;
-import MiniPC.model.MemoryRegister;
+import MiniPC.model.Register;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -58,13 +59,13 @@ public class CPU_Menu extends javax.swing.JFrame {
         int index = this.cpu.getMemory().getAllocationIndex();        
         int size = this.cpu.getLoader().getInstrucionSet().size();
                 
-        Optional<MemoryRegister> register;
+        Optional<Register> register;
         for( int i  = index; i < (size+index); i++){            
             
             
-            register = this.cpu.getMemory().getInstructions().get(i);
-            
-            table.setValueAt(register.get().toBinaryString(), i, 0);            
+            register =  this.cpu.getMemory().getInstructions().get(i);
+            MemoryRegister reg = (MemoryRegister) register.get();
+            table.setValueAt(reg.toBinaryString(), i, 0);            
 
         }
         System.out.println(this.cpu.getMemory().getAllocationIndex()+ "damdmdk");

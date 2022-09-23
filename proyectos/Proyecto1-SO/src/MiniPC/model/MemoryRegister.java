@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author ricardosoto
  */
-public class MemoryRegister implements Register{
+public class MemoryRegister implements Register {
     private Integer operator;
     //Valor de entero, por ejemplo cuando se hace un Mov ax,10 . El valor de registro es el valor de 0 y el value es 10
     private Integer value;
@@ -21,7 +21,8 @@ public class MemoryRegister implements Register{
     private ArrayList<Integer> values; 
     private boolean isInterruption = false;
     private Integer totalValue;
-    
+    public MemoryRegister(){
+    }
     public MemoryRegister(Integer operator,Integer value, Integer address){
         this.address = address;
         this.operator = operator;
@@ -60,6 +61,7 @@ public class MemoryRegister implements Register{
         
         return ms;
     }
+    @Override
     public String toBinaryString(){
         String ms = "";
          

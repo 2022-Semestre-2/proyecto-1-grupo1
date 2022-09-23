@@ -4,11 +4,13 @@
  */
 package MiniPC.controller;
 
+import MiniPC.model.Memory;
 import MiniPC.model.PCB;
 import MiniPC.view.ProcessManager;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Queue;
+import javax.swing.JTable;
 
 /**
  *
@@ -19,9 +21,13 @@ public class PCController {
     //Cola de trabajo
     private Queue<PCB> processQueue;
     private ProcessManager app;
+    private Memory memory;
+    private JTable memoryTable;
+    private int memSize;
     
     //Botones que consultan los PCB's
     private javax.swing.JButton btnStepByStep;
+    
     private javax.swing.JButton btnExeAll;
     
     public PCController(){
@@ -31,12 +37,14 @@ public class PCController {
         this.app.setVisible(true);        
         this.processQueue = new LinkedList<PCB>();
         this.btnStepByStep = this.app.getStepByStep();
-        
+        this.memoryTable = app.getJTableMemory();
         this.btnStepByStep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStepByStepActionPerformed(evt);
             }
         });
+        
+        this.memory = new Memory(app.getMemSize());
 
         
         
@@ -70,30 +78,46 @@ public class PCController {
         if(fileList !=null){
             for(int i = 0 ; i < fileList.length ; i ++){
                 //Aqui hay que validar que ningún PCB tenga un error;
-                PCB pcb = new PCB();
-                pcb.setCPUMemory(fileList[i].toString(), 200);
+                PCB pcb = new PCB("Espera", "CPU1");
+                pcb.setLoader(fileList[i].toString());                
                 processQueue.add(pcb);               
                 System.out.println("PCb");
             }
             
         }    
+        loadPCBstoMem();
         
         
     }
+    public void loadPCBstoMem(){
+        
+        for(PCB pcb: processQueue){
+          this.memory.allocatePCB(pcb);            
+        }        
+          
+        
+    }
     private void btnStepByStepActionPerformed(java.awt.event.ActionEvent evt) {  
-        filesToPCB();
-        for(int i = 0 ; i < processQueue.size(); i ++){
-            PCB pcb = processQueue.remove();
+        
+        if(this.processQueue.isEmpty()){
+            filesToPCB();
+        }    
+        int i = 0;
+        while (!processQueue.isEmpty()){
+            PCB pcb = processQueue.remove();   
+            System.out.println(pcb.getPCBinstrucctionSize());
             for(int j = 0 ; j < pcb.getPCBinstrucctionSize();j++){
                 pcb.executeInstruction();
                 System.out.println("PCb executed");
                 app.getExecutionTables()[0].getModel().setValueAt("X", i, j+1);
                 //Tabla añadir proceso y colocar con X
             }
+            i++;
             
             
             
         }
+        
        
     }                                             
     

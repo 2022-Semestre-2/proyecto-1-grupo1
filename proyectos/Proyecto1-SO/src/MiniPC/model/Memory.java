@@ -15,23 +15,23 @@ import java.util.Random;
  */
 public class Memory {
     private int size;    
-    private ArrayList<Optional<MemoryRegister>> registers;    
+    private ArrayList<Optional<Register>> registers;    
     private final int START_INDEX = 10;
     private int allocationIndex = 0;
     private int allocatedMemorySize = 0; 
     private int currentIndex = 0;
-    
+   
     
     public Memory(int size){
         registers = new ArrayList<>();
         for(int i = 0 ; i <size ; i ++){
             registers.add(Optional.empty());                 
-        }
+        }        
         this.size = size;
     }
     
     
-    public ArrayList<Optional<MemoryRegister>> getInstructions(){
+    public ArrayList<Optional<Register>> getInstructions(){
         return this.registers;
     }
     private boolean spaceFull(int startingIndex, int space){        
@@ -51,11 +51,32 @@ public class Memory {
         return false;
         
     }
-    public void allocatePCB(PCB pcb){
+    public boolean allocatePCB(PCB pcb){
         ArrayList<Integer> pcbData = pcb.getPCBData();
         ArrayList<MemoryRegister> instructions = pcb.getLoader().getInstrucionSet();
+        //El PC
+       
+        if(this.currentIndex+pcbData.size()+instructions.size() >this.size){
+            //Error por desbordamiento de memoria
+            return false;
+        }
         
-        
+        for(int i = 0 ; i < pcbData.size(); i ++){
+            Register infoRegister = new InformationRegister();
+            infoRegister.setValue(pcbData.get(i));
+            this.registers.set(this.currentIndex,Optional.of(infoRegister));
+            this.currentIndex++;
+        }
+        pcb.setProgramCounter(this.currentIndex);
+        for(int i = 0 ; i < instructions.size(); i ++){
+            Register memoryRegister = new MemoryRegister();
+            memoryRegister = instructions.get(i);
+            this.registers.set(this.currentIndex,Optional.of(memoryRegister));
+            this.currentIndex++;
+        }
+        pcb.setMemory(this);
+        System.out.println(this.currentIndex);        
+        return true;
         
         
     }

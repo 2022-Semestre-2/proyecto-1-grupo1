@@ -23,7 +23,7 @@ public class MiniPC {
         
         
         //new Main_Menu().setVisible(true);
-        PCB pcb = new PCB();
+        //PCB pcb = new PCB();
         
         //pcb.setCPUMemory("test/asm1.asm", 200);
         
@@ -54,15 +54,16 @@ public class MiniPC {
  Información contable; el cpu donde se está ejecutando, tiempo de inicio, tiempo empleado.
  Información del estado de E/S; lista de archivos abiertos 
         */
-       String a = "CPU1";
+       String a = "espera";
        String k = "";
        for(int i = 0; i < a.toCharArray().length; i ++){
            k+=Integer.toBinaryString(a.toCharArray()[i]);
            
        }
-       System.out.println(k);
-       int d = Integer.parseInt(k, 2);
-       System.out.println(Integer.toBinaryString(d));
+       System.out.println(k);       
+       Long d = Long.parseLong(k, 2);
+       System.out.println(d.intValue());
+       System.out.println(d);
        System.out.println(new Date().getTime());
        
                
