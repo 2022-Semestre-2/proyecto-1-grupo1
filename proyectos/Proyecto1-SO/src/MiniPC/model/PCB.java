@@ -56,6 +56,7 @@ public class PCB {
     private final CPURegister ac = new CPURegister(0);    
     private Integer ir =0;
     private Integer pc =0;
+    private int currentInstruction;
     private Memory memory;
     private final int STACKCAPACITY= 5;
     private FileLoader loader;
@@ -78,7 +79,11 @@ public class PCB {
                 
         
     }
+    public void setCurrentCPU(String cpu){
+        this.currentCPU = cpu;
+    }
      public PCB(String status, String currentCPU){        
+         this.currentInstruction = 0;
          this.status = status;
          this.currentCPU = currentCPU;
         this.registerAddressMapper.put(1, ax);
@@ -156,8 +161,8 @@ public class PCB {
     }
     
     public boolean programFinished(){        
-        return this.pc >= this.memory.getAllocationIndex()+this.memory.geAllocatedMemorySize();
-    }
+        return this.currentInstruction >=this.getPCBinstrucctionSize();
+    }    
     
     
     public void setMemory(Memory mem){
@@ -169,8 +174,7 @@ public class PCB {
     
     //Ejecuta la instruccion segun el PC (una a una)
     public ArrayList<String> executeInstruction(){        
-        Optional<Register> register = memory.getInstructions().get(this.pc);     
-        System.out.println("PC:" + this.pc.toString());
+        Optional<Register> register = memory.getInstructions().get(this.pc);             
         MemoryRegister instruction = (MemoryRegister)register.get();
         String result = String.format("%16s", Integer.toBinaryString(instruction.getValue() & 0xFFFF)).replace(' ', '0');
         Integer res = Integer.parseInt(result,2);
@@ -225,6 +229,7 @@ public class PCB {
            */
             
             this.pc++;
+            this.currentInstruction++;
             
         
             

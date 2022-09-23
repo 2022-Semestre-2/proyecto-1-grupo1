@@ -4,15 +4,14 @@
  */
 package MiniPC.view;
 
+import MiniPC.controller.PCController;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileReader;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -29,6 +28,7 @@ public final class ProcessManager extends javax.swing.JFrame {
     int diskSize = 512;
     private JTable jTableCPU2;
     int keys = 0;
+    private PCController PC = new PCController();
     
     
     /**
@@ -810,26 +810,17 @@ public final class ProcessManager extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(152, 152, 152)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btmLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmLoadActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setMultiSelectionEnabled(true);
-
-        // Show the dialog; wait until dialog is closed
-        chooser.showOpenDialog(null);
-
-        // Retrieve the selected files.
-        File[] files = chooser.getSelectedFiles();
-        this.loadedFileList = files;
+       
         
        
        
@@ -849,6 +840,10 @@ public final class ProcessManager extends javax.swing.JFrame {
     public javax.swing.JButton getStepByStep(){
         return this.btnStepByStep;
     }
+    public javax.swing.JButton getBtnExeAll(){
+        return this.btnExecute;
+    }
+        
     /**
      * @param args the command line arguments
      */
@@ -883,6 +878,21 @@ public final class ProcessManager extends javax.swing.JFrame {
                 new ProcessManager().setVisible(true);
             }
         });
+    }
+    public javax.swing.JButton  getLoadBtn(){        
+        return this.btmLoad;
+    }
+    public javax.swing.JLabel[] getTextLabelsCpu(String cpuName){
+        
+        if(cpuName.equals("CPU1")){
+            javax.swing.JLabel[] label = {this.txtAX1,this.txtBX1,this.txtCX1,this.txtDX1,this.txtAC1,this.txtIR1,this.txtPC1};;            
+            return label;
+        
+        }else {
+            javax.swing.JLabel[] label = {this.txtAX2,this.txtBX2,this.txtCX2,this.txtDX4,this.txtAC2,this.txtIR2,this.txtPC2};;            
+            return label;
+        }
+        
     }
     
 
