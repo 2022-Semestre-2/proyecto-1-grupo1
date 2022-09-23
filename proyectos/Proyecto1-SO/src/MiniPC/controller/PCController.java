@@ -109,7 +109,7 @@ public class PCController {
             for(int j = 0 ; j < pcb.getPCBinstrucctionSize();j++){
                 pcb.executeInstruction();
                 System.out.println("PCb executed");
-                app.getExecutionTables()[0].getModel().setValueAt("X", i, j+1);
+                app.getExecutionTables()[0].getModel().setValueAt(" ", i, j+1);
                 //Tabla añadir proceso y colocar con X
             }
             i++;
