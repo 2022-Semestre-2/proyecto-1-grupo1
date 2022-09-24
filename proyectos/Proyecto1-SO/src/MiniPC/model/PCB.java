@@ -75,10 +75,9 @@ public class PCB {
         this.registerAddressMapper.put(1, ax);
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
-        this.registerAddressMapper.put(4, dx);        
-                
-        
+        this.registerAddressMapper.put(4, dx);                                
     }
+    
     public void setCurrentCPU(String cpu){
         this.currentCPU = cpu;
     }
@@ -90,9 +89,15 @@ public class PCB {
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
         this.registerAddressMapper.put(4, dx);        
-                
-        
+                               
     }
+     
+     public void setStatus(String state){
+         this.status = state;
+     }
+     public String getStatus(){
+         return this.status;
+     }
      
     
     

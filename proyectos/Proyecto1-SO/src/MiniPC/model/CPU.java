@@ -34,17 +34,20 @@ public class CPU {
             return;
         }
         if(this.currentPcb.programFinished()){            
-            processQueue.remove();
+            processQueue.remove().setStatus("End");
             if(this.processQueue.isEmpty()){
                    this.currentPcbRegistersStatus.clear();
                    return;
             }
-            this.currentPcb = this.processQueue.peek();
+            this.currentPcb = this.processQueue.peek();           
             this.currentProcessIndex++;
             this.processInstructionIndex = 0;            
             
         }
         //Estado del PCB
+        if(this.currentPcb.getStatus().equals("Listo")){
+            this.currentPcb.setStatus("Exec");
+        }
         this.currentPcbRegistersStatus = this.currentPcb.executeInstruction();                
         
         this.processInstructionIndex++;
@@ -65,6 +68,7 @@ public class CPU {
         //Si no hay elementos
         if(this.processQueue.isEmpty()){
             this.currentPcb = pcb;            
+            this.currentPcb.setStatus("Listo");
         }
         this.processQueue.add(pcb);
         System.out.println("ADED PCB");

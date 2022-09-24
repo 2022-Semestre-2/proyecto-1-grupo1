@@ -52,8 +52,7 @@ public final class ProcessManager extends javax.swing.JFrame {
         DefaultTableModel model2 = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int i, int j) {return false;};
-        };
-        
+        };       
         model.setRowCount(n);
         model2.setRowCount(n);
         int r  = this.memorySize;
@@ -215,7 +214,9 @@ public final class ProcessManager extends javax.swing.JFrame {
                 table, value, isSelected, hasFocus, row, col);
         }
     }
-    
+    public JTable getProcessTable(){
+        return this.jTableProcess;
+    }
     public void loadCPU2Table() {
     }
     

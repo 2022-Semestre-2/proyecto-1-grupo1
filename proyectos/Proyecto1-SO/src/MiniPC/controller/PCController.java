@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.Queue;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -35,6 +36,7 @@ public class PCController {
     private javax.swing.JButton btnStepByStep;    
     
     private javax.swing.JButton btnExeAll;
+    private ArrayList<PCB> pcbList = new ArrayList<PCB>();
     
     public PCController(){
         //Cola                     
@@ -91,26 +93,28 @@ public class PCController {
     
     
     private void filesToPCB(File[] fileList){
-        
+               
         if(fileList !=null){
             for(int i = 0 ; i < fileList.length ; i ++){                
                 //Se agregan a la cola de espera del CPU
                 int oneOrCero = (int)Math.round(Math.random());
                 if(oneOrCero==1){
-                    PCB pcb = new PCB("Espera", "CPU1");
+                    PCB pcb = new PCB("Listo", "CPU1");
                     //En esta linea hay que validar que ningún PCB tenga un error;
                     pcb.setLoader(fileList[i].toString());                                                        
                     this.cpu1.addPCBtoQueue(pcb);
+                    this.pcbList.add(pcb);
                     this.memory.allocatePCB(pcb);
                 } else {
-                    PCB pcb = new PCB("Espera", "CPU2");
+                    PCB pcb = new PCB("Listo", "CPU2");
                     pcb.setLoader(fileList[i].toString());                                    
                     this.cpu2.addPCBtoQueue(pcb);
+                    this.pcbList.add(pcb);
                     this.memory.allocatePCB(pcb);
                 }
                 
                      
-                System.out.println("PCb");
+               this.updatePCBStatusTable();
             }
             
         }    
@@ -166,19 +170,40 @@ public class PCController {
     
     private void btnStepActionPerformed(java.awt.event.ActionEvent evt) {                  
         //Coger un proceso y ejecutarlo en CPU
-        this.cpu1.executeInstruction();
-        this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());
-        updateCPUComponents(this.cpu1);
+        this.cpu1.executeInstruction();        
+        this.updatePCBStatusTable();
+        this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());     
+        this.updateCPUComponents(this.cpu1);
         this.cpu2.executeInstruction();
+        this.updatePCBStatusTable();
         this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());
-        updateCPUComponents(this.cpu2);
+        this.updateCPUComponents(this.cpu2);
+        
         
         
         
         
                 
        
-    }                                             
+    }                                           
+    private void updatePCBStatusTable(){        
+         DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int i, int j) {return false;};
+        };
+          
+        model.setRowCount(this.pcbList.size());
+        model.addColumn("Proceso");    
+        model.addColumn("Estado");    
+        this.app.getProcessTable().setModel(model);
+        int i = 0;      
+        for(PCB pcb: this.pcbList){                               
+            
+            this.app.getProcessTable().setValueAt(i, i,0 );
+            this.app.getProcessTable().setValueAt(pcb.getStatus(), i,1 );
+            i++;
+        }
+    }
     private void updateCPUComponents(CPU cpu){
         /**list.add(this.ax.getValue().toString());
             list.add(this.bx.getValue().toString());
