@@ -5,7 +5,7 @@
 package MiniPC;
 
 import MiniPC.controller.PCController;
-import java.util.Random;
+import java.util.LinkedList;
 
 /**
  *
@@ -58,11 +58,7 @@ public class MiniPC {
         */
        
                
-        
-        
-        
        
-         
 
                
         

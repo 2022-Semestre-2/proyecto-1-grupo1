@@ -62,6 +62,7 @@ public class PCB {
     private FileLoader loader;
     private String currentCPU;
     private String status;    
+    private int memoryStartingIndex;
     
     private boolean programFinished = false;   
     //Bandera para el comparador cmp ax, dx. Si son iguales la bandera se pone en true y por ende se usara el comparador
@@ -76,6 +77,12 @@ public class PCB {
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
         this.registerAddressMapper.put(4, dx);                                
+    }
+    public void setMemoryStartingIndex(int i){
+        this.memoryStartingIndex = i;
+    }
+    public int getMemoryStartingIndex(){
+        return this.memoryStartingIndex;
     }
     
     public void setCurrentCPU(String cpu){
@@ -176,7 +183,9 @@ public class PCB {
     public void setLoader(String file){
         this.loader = new FileLoader(file);
     }
-    
+    public int getProgramCounter(){
+        return this.pc;
+    }
     //Ejecuta la instruccion segun el PC (una a una)
     public ArrayList<String> executeInstruction(){        
         Optional<Register> register = memory.getInstructions().get(this.pc);             
@@ -247,6 +256,9 @@ public class PCB {
     }
     public int getPCBinstrucctionSize(){
         return this.loader.getInstrucionSet().size();
+    }
+    public ArrayList<MemoryRegister> getInstructions(){
+        return this.loader.getInstrucionSet();
     }
         
     public void setProgramCounter(int pc){

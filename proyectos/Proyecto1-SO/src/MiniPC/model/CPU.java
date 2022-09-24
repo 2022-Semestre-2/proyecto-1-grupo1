@@ -25,7 +25,7 @@ public class CPU {
         this.processInstructionIndex = 0;
         this.cpuName = name;
     }
-    public void executeInstruction(){
+    public void executeInstruction(Memory memory){
         if(this.processQueue.isEmpty()){
             if(this.currentPcbRegistersStatus!=null && !this.currentPcbRegistersStatus.isEmpty()){
                 this.currentPcbRegistersStatus.clear();
@@ -34,11 +34,15 @@ public class CPU {
             return;
         }
         if(this.currentPcb.programFinished()){            
-            processQueue.remove().setStatus("End");
-            if(this.processQueue.isEmpty()){
+            PCB removed = processQueue.remove();
+            removed.setStatus("Fin");            
+            
+            if(this.processQueue.isEmpty()){                
+                    memory.deallocatePCB(removed);
                    this.currentPcbRegistersStatus.clear();
                    return;
             }
+            memory.deallocatePCB(removed);
             this.currentPcb = this.processQueue.peek();           
             this.currentProcessIndex++;
             this.processInstructionIndex = 0;            
@@ -70,8 +74,7 @@ public class CPU {
             this.currentPcb = pcb;            
             this.currentPcb.setStatus("Listo");
         }
-        this.processQueue.add(pcb);
-        System.out.println("ADED PCB");
+        this.processQueue.add(pcb);        
     }
     
     

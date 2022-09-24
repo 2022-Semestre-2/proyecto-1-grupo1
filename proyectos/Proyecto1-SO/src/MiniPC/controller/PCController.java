@@ -126,8 +126,11 @@ public class PCController {
         for(Optional<Register> reg: this.memory.getInstructions()){
             if(!reg.isEmpty()){
                 this.memoryTable.setValueAt(reg.get().toBinaryString(),i, 1);
-                i++;
-            } 
+                
+            } else {
+                this.memoryTable.setValueAt(" ",i, 1);                
+            }
+            i++;
         }                         
     }
     
@@ -170,14 +173,17 @@ public class PCController {
     
     private void btnStepActionPerformed(java.awt.event.ActionEvent evt) {                  
         //Coger un proceso y ejecutarlo en CPU
-        this.cpu1.executeInstruction();        
+        this.cpu1.executeInstruction(this.memory);                
         this.updatePCBStatusTable();
+        loadPCBstoMem();
         this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());     
         this.updateCPUComponents(this.cpu1);
-        this.cpu2.executeInstruction();
+        this.cpu2.executeInstruction(this.memory);
+        loadPCBstoMem();
         this.updatePCBStatusTable();
         this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());
         this.updateCPUComponents(this.cpu2);
+        
         
         
         
