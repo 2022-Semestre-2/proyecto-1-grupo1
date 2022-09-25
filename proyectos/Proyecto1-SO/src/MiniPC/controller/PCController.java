@@ -5,6 +5,7 @@
 package MiniPC.controller;
 
 import MiniPC.model.CPU;
+import MiniPC.model.FileLoader;
 import MiniPC.model.Memory;
 import MiniPC.model.PCB;
 import MiniPC.model.Register;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Queue;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -95,31 +97,49 @@ public class PCController {
     private void filesToPCB(File[] fileList){
                
         if(fileList !=null){
-            for(int i = 0 ; i < fileList.length ; i ++){                
-                //Se agregan a la cola de espera del CPU
-                int oneOrCero = (int)Math.round(Math.random());
-                if(oneOrCero==1){
-                    PCB pcb = new PCB("Listo", "CPU1");
-                    //En esta linea hay que validar que ningún PCB tenga un error;
-                    pcb.setLoader(fileList[i].toString());                                                        
-                    this.cpu1.addPCBtoQueue(pcb);
-                    this.pcbList.add(pcb);
-                    this.memory.allocatePCB(pcb);
-                } else {
-                    PCB pcb = new PCB("Listo", "CPU2");
-                    pcb.setLoader(fileList[i].toString());                                    
-                    this.cpu2.addPCBtoQueue(pcb);
-                    this.pcbList.add(pcb);
-                    this.memory.allocatePCB(pcb);
-                }
+            for(int i = 0 ; i < fileList.length ; i ++){
+
+                // Se verifica si el archivo es valido 
                 
-                     
-               this.updatePCBStatusTable();
-            }
-            
+                if (testFile(fileList[i].toString())) {
+                //Se agregan a la cola de espera del CPU
+                    int oneOrCero = (int)Math.round(Math.random());
+                    if(oneOrCero==1){
+                        PCB pcb = new PCB("Listo", "CPU1");
+                        pcb.setLoader(fileList[i].toString());                                                        
+                        this.cpu1.addPCBtoQueue(pcb);
+                        this.pcbList.add(pcb);
+                        this.memory.allocatePCB(pcb);
+                    } else {
+                        PCB pcb = new PCB("Listo", "CPU2");
+                        pcb.setLoader(fileList[i].toString());                                    
+                        this.cpu2.addPCBtoQueue(pcb);
+                        this.pcbList.add(pcb);
+                        this.memory.allocatePCB(pcb);
+                    }
+                   this.updatePCBStatusTable();
+                }
+            }            
         }    
         loadPCBstoMem();                
     }
+    
+    private boolean testFile(String filepath) {
+        if (filepath.endsWith(".asm")) {
+            FileLoader fileLoader = new FileLoader(filepath);
+            if (fileLoader.getCountErrors()>0) {
+                JOptionPane.showMessageDialog(this.app, "El archivo en la ruta: " + filepath + " presenta errores de sintaxís\n"+ fileLoader.getErrorMessage(),"MiniPC", 0);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        JOptionPane.showMessageDialog(this.app, "El archivo " + filepath + " no es un archivo .asm\n","MiniPC", 0);
+        return false;
+    }
+    
+    
+    
     private void loadPCBstoMem(){
                              
         int i =0;

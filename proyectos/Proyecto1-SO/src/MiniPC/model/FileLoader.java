@@ -59,7 +59,7 @@ public class FileLoader {
             }
             if(linePos ==0){
                 countErrors++;
-                this.errorHandler = new ErrorHandler(-1,"Archivo vació","El archivo cargado no tiene contendio.");                               
+                this.errorHandler = new ErrorHandler(-1,"Archivo vacío","El archivo cargado no tiene contenido.");                               
          }
         
             
@@ -167,7 +167,7 @@ public class FileLoader {
             this.errorHandler = new ErrorHandler(linePos,"Operación no reconocida","La operación en la asignación no es reconocida.");      
         }
         if(reg==null){
-            this.errorHandler = new ErrorHandler(linePos,"Registro inváildo","El registro en la asignación es inválido.");      
+            this.errorHandler = new ErrorHandler(linePos,"Registro inválido","El registro en la asignación es inválido.");      
         }
         if(opr != 3 && opr!=8 && opr!=11){
             this.errorHandler = new ErrorHandler(linePos,"Operador inválido","El operador no es válido para asignación.");      
@@ -230,7 +230,7 @@ public class FileLoader {
         }
         if(reg==null){
             
-            this.errorHandler = new ErrorHandler(linePos,"Registro inváildo","El registro en la operación es inválido.");      
+            this.errorHandler = new ErrorHandler(linePos,"Registro inválido","El registro en la operación es inválido.");      
         }
         
         if(opr == 3){
