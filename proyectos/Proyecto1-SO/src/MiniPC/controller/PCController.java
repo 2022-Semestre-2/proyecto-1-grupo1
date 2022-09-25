@@ -5,6 +5,7 @@
 package MiniPC.controller;
 
 import MiniPC.model.CPU;
+import MiniPC.model.Disk;
 import MiniPC.model.FileLoader;
 import MiniPC.model.Memory;
 import MiniPC.model.PCB;
@@ -32,6 +33,8 @@ public class PCController {
     private ProcessManager app;
     private Memory memory;
     private JTable memoryTable;
+    private Disk disk;
+    private JTable diskTable;
     private int memSize;
     private javax.swing.JButton btnFileLoad;
     //Botones que consultan los PCB's
@@ -52,6 +55,7 @@ public class PCController {
         this.btnStepByStep = this.app.getStepByStep();
         this.btnFileLoad = this.app.getLoadBtn();
         this.memoryTable = app.getJTableMemory();
+        this.diskTable = app.getJTableDisk();
         this.btnExeAll = app.getBtnExeAll();
         this.btnExeAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -69,6 +73,7 @@ public class PCController {
             }
         });
         this.memory = new Memory(app.getMemSize());
+        this.disk = new Disk(app.getDiskSize());
     }
     
     private void loadApp(){

@@ -58,6 +58,7 @@ public class PCB {
     private Integer pc =0;
     private int currentInstruction;
     private Memory memory;
+    private Disk disk;
     private final int STACKCAPACITY= 5;
     private FileLoader loader;
     private String currentCPU;
@@ -167,6 +168,10 @@ public class PCB {
     public Memory getMemory(){
         return this.memory;
     }
+    
+    public Disk getDisk() {
+        return this.disk;
+    }
 
     public FileLoader getLoader() {
         return loader;
@@ -180,6 +185,11 @@ public class PCB {
     public void setMemory(Memory mem){
         this.memory= mem;
     }
+    
+    public void setDisk(Disk disk){
+        this.disk = disk;
+    }
+    
     public void setLoader(String file){
         this.loader = new FileLoader(file);
     }

@@ -100,9 +100,15 @@ public final class ProcessManager extends javax.swing.JFrame {
         
         
     }
+    
     public JTable getJTableMemory(){
         return this.jTableMemory;
     }
+    
+    public JTable getJTableDisk(){
+        return this.jTableDisk;
+    }
+    
     public JTable[] getExecutionTables(){
         JTable[] tables= {this.jTableProcessExecution,this.jTableProcessExecution1};
         return tables;
@@ -124,6 +130,11 @@ public final class ProcessManager extends javax.swing.JFrame {
     public int getMemSize(){
         return this.memorySize;
     }
+    
+    public int getDiskSize(){
+        return this.diskSize;
+    }
+    
     
     public void loadMemoryTable() {
         DefaultTableModel model = new DefaultTableModel() {
