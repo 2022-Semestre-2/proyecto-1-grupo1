@@ -5,7 +5,6 @@
 package MiniPC.controller;
 
 import MiniPC.model.CPU;
-import MiniPC.model.Disk;
 import MiniPC.model.FileLoader;
 import MiniPC.model.Memory;
 import MiniPC.model.PCB;
@@ -32,10 +31,10 @@ public class PCController {
     private Queue<PCB> processQueue;
     private ProcessManager app;
     private Memory memory;
-    private JTable memoryTable;
-    private Disk disk;
+    private JTable memoryTable;    
     private JTable diskTable;
-    private int memSize;
+    private int memSize;    
+    private Memory disk;
     private javax.swing.JButton btnFileLoad;
     //Botones que consultan los PCB's
     private javax.swing.JButton btnStepByStep;    
@@ -73,7 +72,7 @@ public class PCController {
             }
         });
         this.memory = new Memory(app.getMemSize());
-        this.disk = new Disk(app.getDiskSize());
+        this.disk = new Memory(app.getDiskSize());
     }
     
     private void loadApp(){
@@ -112,15 +111,29 @@ public class PCController {
                     if(oneOrCero==1){
                         PCB pcb = new PCB("Listo", "CPU1");
                         pcb.setLoader(fileList[i].toString());                                                        
-                        this.cpu1.addPCBtoQueue(pcb);
+                        
                         this.pcbList.add(pcb);
-                        this.memory.allocatePCB(pcb);
+                        if(!this.memory.allocatePCB(pcb)){
+                            this.disk.allocatePCB(pcb);
+                            pcb.setStatus("Prep");
+                            
+                        }else {
+                            this.cpu1.addPCBtoQueue(pcb);
+                        }
+                        
                     } else {
                         PCB pcb = new PCB("Listo", "CPU2");
                         pcb.setLoader(fileList[i].toString());                                    
-                        this.cpu2.addPCBtoQueue(pcb);
-                        this.pcbList.add(pcb);
-                        this.memory.allocatePCB(pcb);
+                        
+                        this.pcbList.add(pcb);                        
+                        //Si no cabe en memoria se coloca en disco
+                        if(!this.memory.allocatePCB(pcb)){
+                            this.disk.allocatePCB(pcb);
+                            pcb.setStatus("Prep");
+                            
+                        } else {
+                            this.cpu2.addPCBtoQueue(pcb);
+                        }
                     }
                    this.updatePCBStatusTable();
                 }
@@ -156,6 +169,16 @@ public class PCController {
                 this.memoryTable.setValueAt(" ",i, 1);                
             }
             i++;
+        }                         
+        int j =0;
+        for(Optional<Register> reg: this.disk.getInstructions()){
+            if(!reg.isEmpty()){
+                this.app.getDiskTable().setValueAt(reg.get().toBinaryString(),j, 1);
+                
+            } else {
+                this.app.getDiskTable().setValueAt(" ",j, 1);                
+            }
+            j++;
         }                         
     }
     
@@ -198,12 +221,12 @@ public class PCController {
     
     private void btnStepActionPerformed(java.awt.event.ActionEvent evt) {                  
         //Coger un proceso y ejecutarlo en CPU
-        this.cpu1.executeInstruction(this.memory);                
+        this.cpu1.executeInstruction(this.memory, this.disk,this.cpu1,this.cpu2);
         this.updatePCBStatusTable();
         loadPCBstoMem();
         this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());     
         this.updateCPUComponents(this.cpu1);
-        this.cpu2.executeInstruction(this.memory);
+        this.cpu2.executeInstruction(this.memory,this.disk,this.cpu1,this.cpu2);
         loadPCBstoMem();
         this.updatePCBStatusTable();
         this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());

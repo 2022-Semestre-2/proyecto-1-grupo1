@@ -25,7 +25,7 @@ public class CPU {
         this.processInstructionIndex = 0;
         this.cpuName = name;
     }
-    public void executeInstruction(Memory memory){
+    public void executeInstruction(Memory memory,Memory disk,CPU cpu1, CPU cpu2){
         if(this.processQueue.isEmpty()){
             if(this.currentPcbRegistersStatus!=null && !this.currentPcbRegistersStatus.isEmpty()){
                 this.currentPcbRegistersStatus.clear();
@@ -35,23 +35,54 @@ public class CPU {
         }
         if(this.currentPcb.programFinished()){            
             PCB removed = processQueue.remove();
-            removed.setStatus("Fin");            
-            
-            if(this.processQueue.isEmpty()){                
-                    memory.deallocatePCB(removed);
+            removed.setStatus("Fin");               
+            memory.deallocatePCB(removed);    
+            if(this.processQueue.isEmpty()){     
+                 if(!disk.getProcessesLoaded().isEmpty() && memory.PCBfits(disk.getProcessesLoaded().getFirst())){
+                           System.out.println("ProcessDisconectedfromdiskAll");                       
+                        PCB process = disk.getProcessesLoaded().getFirst();
+                        disk.deallocatePCB(process);
+                       int oneOrCero = (int)Math.round(Math.random());
+                        if(oneOrCero==1){
+                            cpu1.addPCBtoQueue(process);                            
+                        } else {
+                            cpu2.addPCBtoQueue(process);                            
+                        }
+                       
+                       memory.allocatePCB(process);
+                       process.setStatus("Listo");
+                       
+                   }
+                    //memory.deallocatePCB(removed);                   
                    this.currentPcbRegistersStatus.clear();
                    return;
             }
-            memory.deallocatePCB(removed);
+            if(!disk.getProcessesLoaded().isEmpty() && memory.PCBfits(disk.getProcessesLoaded().getFirst())){
+                           System.out.println("ProcessDisconectedfromdiskAll");                       
+                        PCB process = disk.getProcessesLoaded().getFirst();
+                        disk.deallocatePCB(process);
+                       int oneOrCero = (int)Math.round(Math.random());
+                        if(oneOrCero==1){
+                            cpu1.addPCBtoQueue(process);                            
+                        } else {
+                            cpu2.addPCBtoQueue(process);                            
+                        }
+                        process.setStatus("Listo");
+                       
+                       memory.allocatePCB(process);
+                       
+                   }
+            
+            
+             
             this.currentPcb = this.processQueue.peek();           
             this.currentProcessIndex++;
             this.processInstructionIndex = 0;            
             
         }
         //Estado del PCB
-        if(this.currentPcb.getStatus().equals("Listo")){
-            this.currentPcb.setStatus("Exec");
-        }
+       
+        this.currentPcb.setStatus("Exec");
         this.currentPcbRegistersStatus = this.currentPcb.executeInstruction();                
         
         this.processInstructionIndex++;
@@ -71,10 +102,12 @@ public class CPU {
     public void addPCBtoQueue(PCB pcb){
         //Si no hay elementos
         if(this.processQueue.isEmpty()){
-            this.currentPcb = pcb;            
+            this.currentPcb = pcb;   
+            
             this.currentPcb.setStatus("Listo");
         }
-        this.processQueue.add(pcb);        
+        this.processQueue.add(pcb);         
+
     }
     
     

@@ -69,6 +69,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                                      
         }
         
+        
         this.jTableProcessExecution.setModel(model2);            
         this.jTableProcessExecution1.setModel(model);
         this.jTableProcessExecution1.getColumnModel().getColumn(0).setMinWidth(70);       
@@ -100,6 +101,9 @@ public final class ProcessManager extends javax.swing.JFrame {
         
         
     }
+    public JTable getDiskTable(){
+            return this.jTableDisk;
+        }
     
     public JTable getJTableMemory(){
         return this.jTableMemory;

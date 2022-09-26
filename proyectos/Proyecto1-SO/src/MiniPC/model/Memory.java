@@ -39,14 +39,14 @@ public class Memory {
     }
     private boolean spaceFull(int startingIndex, int space){        
         if(startingIndex + space > this.size){
-                    System.out.println(startingIndex + space+"123123");
+                        
             
             return true;   
         }
         if(this.registers.get(startingIndex).isEmpty()){
             for(int i = startingIndex ; i < space; i ++){
                 if(this.registers.get(i).isPresent()){                    
-                    System.out.println(startingIndex + space+"6969969");
+                    
                     return true;
                 }
             }
@@ -56,53 +56,117 @@ public class Memory {
     }
     public void deallocatePCB(PCB pcb){
         int index = pcb.getMemoryStartingIndex();
-        int tamannioPcb = pcb.getInstructions().size()+pcb.getPCBData().size();
-        System.out.println(index + " "+ pcb.toString()+ "--"+ tamannioPcb);                
-        System.out.println( "Current Data section size "+pcb.getPCBData().size()+"-- tamanniototal" + tamannioPcb);    
-        System.out.println( "Current ProgramCounter "+pcb.getProgramCounter()+"-- startindex "+ index);    
+        int tamannioPcb = pcb.getInstructions().size()+pcb.getPCBData().size();      
+               
         
+        System.out.println("start toDElPCB index: "+index);
         for(int i = 0 ; i < tamannioPcb; i++){                
             this.registers.remove(index);            
+            
         }
         
         
         //se busca el PCB siguiente        
         PCB nextProcessToExe= null;
-        PCB current = pcb;
+        PCB current = pcb;        
+        
+        int k = 0;        
+        //pcb i = 0 ==
+        //pcb2 i = 1 == 
+        //curr = nextProcessToexe = pcb2
+        //k=1
+        //
         for(int i = 0 ; i < this.pcbs.size(); i++){
-            if(this.pcbs.get(i).equals(current)){
-                try{
-                    nextProcessToExe  = this.pcbs.get(i+1);
-                    nextProcessToExe.setProgramCounter(pcb.getMemoryStartingIndex()+nextProcessToExe.getPCBData().size());
-                    System.out.println( "Next data sectionsize "+nextProcessToExe.getPCBData().size()); 
-                    nextProcessToExe.setMemoryStartingIndex(pcb.getMemoryStartingIndex());    
-                    System.out.println(nextProcessToExe.getProgramCounter() + "---" +nextProcessToExe.getMemoryStartingIndex() );
-                    current = nextProcessToExe;
+            if(this.pcbs.get(i).equals(pcb)){                
+                try{                                        
+                    nextProcessToExe  = this.pcbs.get(i+1);                    
+                    nextProcessToExe.setProgramCounter(current.getMemoryStartingIndex()+nextProcessToExe.getPCBData().size());                    
+                    nextProcessToExe.setMemoryStartingIndex(current.getMemoryStartingIndex());                                                                                                                           
+                    System.out.println("inNext toDel newStartIndex: "+nextProcessToExe.getMemoryStartingIndex());
+                    System.out.println("inNext toDel newindexSize: "+(nextProcessToExe.getMemoryStartingIndex()+nextProcessToExe.getPCBData().size()+nextProcessToExe.getInstructions().size()));
+                    current = nextProcessToExe;                    
+                    k = i+1;
+                    break;
                 } catch(IndexOutOfBoundsException e){
-                    
+                    k=i+1;
+                    break;
                 }
                 
             }
         }
+        System.out.println("KVALUE: "+k);
+        System.out.println("QUEUE LENGTH: "+this.pcbs.size());
+        for(int r = k ;r < this.pcbs.size(); r++){
+            try{                                        
+                nextProcessToExe  = this.pcbs.get(r+1); 
+                int finalIndexCurr = current.getMemoryStartingIndex()+current.getPCBData().size()+current.getInstructions().size();
+                nextProcessToExe.setProgramCounter(finalIndexCurr+nextProcessToExe.getPCBData().size());                    
+                nextProcessToExe.setMemoryStartingIndex(finalIndexCurr);                                                                                                                           
+                current = nextProcessToExe;
+                System.out.println("Next toDel newStartIndex: "+nextProcessToExe.getMemoryStartingIndex());
+                System.out.println("Next toDel newindexSize: "+(nextProcessToExe.getMemoryStartingIndex()+nextProcessToExe.getPCBData().size()+nextProcessToExe.getInstructions().size()));
+            } catch(IndexOutOfBoundsException e){
+                    
+            }
+        }
+        this.pcbs.remove(pcb);
+        
+        
+        
                     
         
         //Se agrega al final de los reigstros la memoria liberada
         for(int j = 0 ; j < tamannioPcb; j++){
             registers.add(Optional.empty());                 
         }
+        int newIndex = 0;
+        while(this.registers.get(newIndex).isPresent()){
+            newIndex++;
+        } 
+        this.currentIndex = newIndex;
+        System.out.println("Final index: "+newIndex);
+       
+       
+        
                 
         
         
     }
-    public boolean allocatePCB(PCB pcb){
+    public void printMemory(){
+        System.out.println("Memory printing....");
+        for(int i = 0 ;i < this.registers.size(); i ++){
+            if(this.registers.get(i).isPresent()){
+                
+                System.out.println(this.registers.get(i).get().toBinaryString());
+            }
+        }
+    }
+    public boolean PCBfits(PCB pcb){
         ArrayList<Integer> pcbData = pcb.getPCBData();
         ArrayList<MemoryRegister> instructions = pcb.getLoader().getInstrucionSet();
         //El PC
        
-        if(this.currentIndex+pcbData.size()+instructions.size() >this.size){
+        return this.currentIndex+pcbData.size()+instructions.size() <=this.size;
+            //Error por desbordamiento de memoria
+            
+        
+    }
+    public LinkedList<PCB> getProcessesLoaded(){
+        return this.pcbs;
+    }
+    public boolean allocatePCB(PCB pcb){
+        if(pcb==null){
+            return false;
+        }
+        ArrayList<Integer> pcbData = pcb.getPCBData();
+        ArrayList<MemoryRegister> instructions = pcb.getLoader().getInstrucionSet();
+        //El PC
+       
+        if(this.currentIndex+pcbData.size()+instructions.size() >this.size){                    
             //Error por desbordamiento de memoria
             return false;
         }
+        
         pcb.setMemoryStartingIndex(this.currentIndex);
         for(int i = 0 ; i < pcbData.size(); i ++){
             Register infoRegister = new InformationRegister();

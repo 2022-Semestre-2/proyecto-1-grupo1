@@ -198,8 +198,7 @@ public class FileLoader {
               this.errorHandler = new ErrorHandler(linePos,"Operación incorrecta","La sintáxis en la operación es incorrecta.");                
             return false;
         }
-          //Si es una interrupción
-          System.out.println(asignation[0].toLowerCase() + " "+ instructionMapper.get(asignation[0].toLowerCase()));
+          //Si es una interrupción          
 
          Integer inst=instructionMapper.get(asignation[0].toLowerCase());
          if((inst!=null )&&( inst ==10 || inst==12 || inst==13)){             

@@ -5,7 +5,8 @@
 package MiniPC;
 
 import MiniPC.controller.PCController;
-import java.util.LinkedList;
+import MiniPC.model.Memory;
+import MiniPC.model.PCB;
 
 /**
  *
@@ -42,7 +43,40 @@ public class MiniPC {
         */
         
         PCController c = new PCController();                          
-        c.init();
+       c.init();
+       /*
+       Memory mem = new Memory(200);
+       PCB pcb = new PCB("jjjj","CPU1");       
+       pcb.setMemory(mem);              
+       pcb.setLoader("/Users/ricardosoto/Downloads/asmtest/asm1.asm");
+       mem.allocatePCB(pcb);
+       PCB pcb2 = new PCB("zzzz","CPU1");       
+       pcb2.setMemory(mem);       
+       pcb2.setLoader("/Users/ricardosoto/Downloads/asmtest/asm2.asm");
+       mem.allocatePCB(pcb2);
+       
+       PCB pcb3 = new PCB(" ","CPU1");       
+       pcb3.setMemory(mem);
+       pcb3.setLoader("/Users/ricardosoto/Downloads/asmtest/asm3.asm");
+       mem.allocatePCB(pcb3);
+       
+       
+       mem.deallocatePCB(pcb2);
+       
+       mem.deallocatePCB(pcb);
+       
+       mem.deallocatePCB(pcb3);
+       */
+       
+       
+       
+       
+       
+      
+       
+       
+       
+       
        
        
        // pcb.executeAll("test/asm1.asm", 200);

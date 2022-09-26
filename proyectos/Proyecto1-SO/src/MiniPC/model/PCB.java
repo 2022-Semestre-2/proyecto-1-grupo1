@@ -57,8 +57,7 @@ public class PCB {
     private Integer ir =0;
     private Integer pc =0;
     private int currentInstruction;
-    private Memory memory;
-    private Disk disk;
+    private Memory memory;    
     private final int STACKCAPACITY= 5;
     private FileLoader loader;
     private String currentCPU;
@@ -168,10 +167,7 @@ public class PCB {
     public Memory getMemory(){
         return this.memory;
     }
-    
-    public Disk getDisk() {
-        return this.disk;
-    }
+       
 
     public FileLoader getLoader() {
         return loader;
@@ -185,10 +181,7 @@ public class PCB {
     public void setMemory(Memory mem){
         this.memory= mem;
     }
-    
-    public void setDisk(Disk disk){
-        this.disk = disk;
-    }
+        
     
     public void setLoader(String file){
         this.loader = new FileLoader(file);
@@ -197,8 +190,10 @@ public class PCB {
         return this.pc;
     }
     //Ejecuta la instruccion segun el PC (una a una)
-    public ArrayList<String> executeInstruction(){        
-        Optional<Register> register = memory.getInstructions().get(this.pc);             
+    public ArrayList<String> executeInstruction(){                     
+        Optional<Register> register = memory.getInstructions().get(this.pc);     
+        
+        
         MemoryRegister instruction = (MemoryRegister)register.get();
         String result = String.format("%16s", Integer.toBinaryString(instruction.getValue() & 0xFFFF)).replace(' ', '0');
         Integer res = Integer.parseInt(result,2);
