@@ -4,6 +4,7 @@
  */
 package MiniPC.model;
 
+import MiniPC.controller.PCController;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -25,7 +26,7 @@ public class CPU {
         this.processInstructionIndex = 0;
         this.cpuName = name;
     }
-    public void executeInstruction(Memory memory,Memory disk,CPU cpu1, CPU cpu2){
+    public void executeInstruction(Memory memory,Memory disk,CPU cpu1, CPU cpu2, PCController cont){
         if(this.processQueue.isEmpty()){
             if(this.currentPcbRegistersStatus!=null && !this.currentPcbRegistersStatus.isEmpty()){
                 this.currentPcbRegistersStatus.clear();
@@ -83,7 +84,7 @@ public class CPU {
         //Estado del PCB
        
         this.currentPcb.setStatus("Exec");
-        this.currentPcbRegistersStatus = this.currentPcb.executeInstruction();                
+        this.currentPcbRegistersStatus = this.currentPcb.executeInstruction(cont);                
         
         this.processInstructionIndex++;
     }
@@ -109,6 +110,7 @@ public class CPU {
         this.processQueue.add(pcb);         
 
     }
+    
     
     
 }

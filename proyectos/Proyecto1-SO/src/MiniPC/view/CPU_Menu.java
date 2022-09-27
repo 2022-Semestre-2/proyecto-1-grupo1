@@ -416,6 +416,7 @@ public class CPU_Menu extends javax.swing.JFrame {
              return;
 
         }
+        /*
         ArrayList<String> instruction = this.cpu.executeInstruction();
         txtAX.setText(instruction.get(0));
         txtBX.setText(instruction.get(1));
@@ -427,7 +428,7 @@ public class CPU_Menu extends javax.swing.JFrame {
         txtPC.setText(pc.toString());        
         
         table.setRowSelectionInterval(pc-1, pc-1);
-
+        */
         
         
         

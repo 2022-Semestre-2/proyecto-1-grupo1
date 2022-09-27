@@ -17,6 +17,7 @@ import java.util.Queue;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -33,6 +34,8 @@ public class PCController {
     private Memory memory;
     private JTable memoryTable;    
     private JTable diskTable;
+    private JTable keyboardTable;
+    private JTextField inputArea;
     private int memSize;    
     private Memory disk;
     private javax.swing.JButton btnFileLoad;
@@ -41,6 +44,8 @@ public class PCController {
     
     private javax.swing.JButton btnExeAll;
     private ArrayList<PCB> pcbList = new ArrayList<PCB>();
+    
+    private int keys = 0;
     
     public PCController(){
         //Cola                     
@@ -55,6 +60,8 @@ public class PCController {
         this.btnFileLoad = this.app.getLoadBtn();
         this.memoryTable = app.getJTableMemory();
         this.diskTable = app.getJTableDisk();
+        this.keyboardTable = this.app.getJTableKeyboard();
+        this.inputArea = this.app.getTextField();
         this.btnExeAll = app.getBtnExeAll();
         this.btnExeAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,7 +212,7 @@ public class PCController {
             PCB pcb = processQueue.remove();   
             System.out.println(pcb.getPCBinstrucctionSize());
             for(int j = 0 ; j < pcb.getPCBinstrucctionSize();j++){
-                pcb.executeInstruction();
+                //pcb.executeInstruction(this.app.getInput());
                 System.out.println("PCb executed");
                 app.getExecutionTables()[0].getModel().setValueAt(" ", i, j+1);
                 //Tabla añadir proceso y colocar con X
@@ -217,16 +224,20 @@ public class PCController {
         }
         
        
-    }                                             
+    }        
+    public ProcessManager getApp(){
+        return this.app;
+    }
     
     private void btnStepActionPerformed(java.awt.event.ActionEvent evt) {                  
-        //Coger un proceso y ejecutarlo en CPU
-        this.cpu1.executeInstruction(this.memory, this.disk,this.cpu1,this.cpu2);
+        //Coger un proceso y ejecutarlo en CPU|
+        PCController c = this;
+        this.cpu1.executeInstruction(this.memory, this.disk,this.cpu1,this.cpu2,c);
         this.updatePCBStatusTable();
         loadPCBstoMem();
         this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());     
         this.updateCPUComponents(this.cpu1);
-        this.cpu2.executeInstruction(this.memory,this.disk,this.cpu1,this.cpu2);
+        this.cpu2.executeInstruction(this.memory,this.disk,this.cpu1,this.cpu2, c);
         loadPCBstoMem();
         this.updatePCBStatusTable();
         this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());
@@ -275,7 +286,11 @@ public class PCController {
             
             labels[i].setText(infoBPC.get(i));
         }
-        
+        if (infoBPC.get(8).equals("true")) {
+            this.app.getJTableKeyboard().setValueAt(infoBPC.get(3), this.app.getKeys(), 0);
+            int k = this.app.getKeys();
+            this.app.setKeys(k++);
+        }
     }
     
     

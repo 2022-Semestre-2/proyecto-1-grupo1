@@ -4,13 +4,18 @@
  */
 package MiniPC.model;
 
+import MiniPC.controller.PCController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.Stack;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -70,13 +75,14 @@ public class PCB {
     //Pila
     private Stack<Integer> stack = new Stack();    
     //CPU_Menu menu = new CPU_Menu();
-    
+    private boolean flag09H = false;
+    private boolean flag10h = false;
     
     public PCB(){        
         this.registerAddressMapper.put(1, ax);
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
-        this.registerAddressMapper.put(4, dx);                                
+        this.registerAddressMapper.put(4, dx);
     }
     public void setMemoryStartingIndex(int i){
         this.memoryStartingIndex = i;
@@ -190,7 +196,7 @@ public class PCB {
         return this.pc;
     }
     //Ejecuta la instruccion segun el PC (una a una)
-    public ArrayList<String> executeInstruction(){                     
+    public ArrayList<String> executeInstruction(PCController input){                     
         Optional<Register> register = memory.getInstructions().get(this.pc);     
         
         
@@ -208,7 +214,7 @@ public class PCB {
                 case 6 -> executeInc(instruction);
                 case 7 -> executeDec(instruction);
                 case 8 -> executeSwap(instruction);                
-                case 9 -> executeInterruption(instruction);
+                case 9 -> executeInterruption(instruction, input);
                 case 10 -> executeJmp(instruction);
                 case 11 -> executeCmp(instruction);
                 case 12 -> executeJe(instruction);
@@ -233,6 +239,9 @@ public class PCB {
             
             list.add(this.pc.toString());
             list.add(instruction.toBinaryString());
+            
+            list.add(String.valueOf(this.flag09H));
+            
             /**
                 System.out.println("-------------------------------");
             System.out.println("Ax Value:" + this.ax.getValue());
@@ -275,7 +284,7 @@ public class PCB {
         this.loader = new FileLoader(path);        
             this.memory.allocate(loader.getInstrucionSet());
     }
-    public void executeAll(String  path, int memSize){
+    public void executeAll(String  path, int memSize, PCController input){
         //this.memory = new Memory(memSize);
         //this.loader =  new FileLoader(path);;                        
         //this.memory.allocate(this.loader.getInstrucionSet());                              
@@ -304,7 +313,7 @@ public class PCB {
                 case 6 -> executeInc(instruction);
                 case 7 -> executeDec(instruction);
                 case 8 -> executeSwap(instruction);                
-                case 9 -> executeInterruption(instruction);
+                case 9 -> executeInterruption(instruction, input);
                 case 10 -> executeJmp(instruction);
                 case 11 -> executeCmp(instruction);
                 case 12 -> executeJe(instruction);
@@ -406,13 +415,13 @@ public class PCB {
 
     }
     
-    private void executeInterruption(MemoryRegister reg){
+    private void executeInterruption(MemoryRegister reg, PCController cont){
         // valor de la interrupción
         int value= reg.getValue();
         switch (value) {                
             
-            case 9 -> System.out.println(this.dx.getValue());
-            case 10 -> INT10H();
+            case 9 -> this.flag09H = true;
+            case 10 -> INT10H( cont);
             
             default -> {
                 
@@ -420,6 +429,7 @@ public class PCB {
         }
         
     }
+    
     private void executeJmp(MemoryRegister reg){
         this.pc = this.pc+reg.getValue();
                 
@@ -464,20 +474,15 @@ public class PCB {
         
         
     }
-    private void INT10H(){
-        Scanner myObj = new Scanner(System.in);  // Create a Scanner object10       
-        String userName = myObj.nextLine();  // Read user input
-        Integer newDxValue = null;
-        try{
-            newDxValue = Integer.parseInt(userName);
-        }catch(NumberFormatException e){
-        }
-        this.dx.setValue(newDxValue);
+    private void INT10H( PCController cont){
+        
+        int input = Integer.parseInt(JOptionPane.showInputDialog(null, ">>>  ",""));
+        this.dx.setValue(input);
+        int key = cont.getApp().getKeys();
+        cont.getApp().getJTableKeyboard().setValueAt(input, key++, 0);
+        cont.getApp().setKeys(key++);
         
     }
-    
-    
-    
     
     
     

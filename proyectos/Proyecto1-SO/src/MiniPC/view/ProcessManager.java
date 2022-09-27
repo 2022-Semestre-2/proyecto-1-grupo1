@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import org.json.simple.JSONObject;
@@ -29,7 +30,7 @@ public final class ProcessManager extends javax.swing.JFrame {
     private JTable jTableCPU2;
     int keys = 0;
     private PCController PC = new PCController();
-    
+    int input = 0;
     
     /**
      * Creates new form ProcessManager
@@ -42,6 +43,7 @@ public final class ProcessManager extends javax.swing.JFrame {
         loadDiskTable();
         loadProcessTable();
         loadCPU2Table();
+        loadKeyboardTable();
     }
     
     public void  modifyProcessExecutionTable(int n){
@@ -112,6 +114,12 @@ public final class ProcessManager extends javax.swing.JFrame {
     public JTable getJTableDisk(){
         return this.jTableDisk;
     }
+    
+    public JTable getJTableKeyboard() {
+        return this.jTableKeyboard;
+    }
+    
+    
     
     public JTable[] getExecutionTables(){
         JTable[] tables= {this.jTableProcessExecution,this.jTableProcessExecution1};
@@ -187,6 +195,16 @@ public final class ProcessManager extends javax.swing.JFrame {
             jTableDisk.setValueAt(i+1, i, 0);
         }
     }
+    
+    public void loadKeyboardTable() {
+        DefaultTableModel model = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int i, int j) {return false;};
+        };
+        model.setRowCount(memorySize);
+        model.addColumn("");
+    }
+    
     
     public void loadCPU1Table() {
         DefaultTableModel model = new DefaultTableModel() {
@@ -646,12 +664,13 @@ public final class ProcessManager extends javax.swing.JFrame {
 
         jTableKeyboard.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null},
-                {null},
                 {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},
+                {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},
+                {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},
+                {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},
+                {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},
+                {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},
+                {null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null},{null}
             },
             new String [] {
                 ""
@@ -843,9 +862,17 @@ public final class ProcessManager extends javax.swing.JFrame {
     }//GEN-LAST:event_btmLoadActionPerformed
 
     private void jInputKeyboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jInputKeyboardActionPerformed
+        /*
         System.out.println(evt.getActionCommand());
         jInputKeyboard.setText("");
         jTableKeyboard.setValueAt(evt.getActionCommand(), this.keys++, 0);
+        */
+        System.out.println("enter action");
+        System.out.println(evt.getActionCommand());
+        this.input = Integer.parseInt(evt.getActionCommand());
+        jInputKeyboard.setText("");
+        setKeys(this.keys++);
+        jTableKeyboard.setValueAt(evt.getActionCommand(), this.keys, 0);
     }//GEN-LAST:event_jInputKeyboardActionPerformed
 
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
@@ -859,6 +886,23 @@ public final class ProcessManager extends javax.swing.JFrame {
     public javax.swing.JButton getBtnExeAll(){
         return this.btnExecute;
     }
+    
+    public JTextField getTextField() {
+        return this.jInputKeyboard;
+    }
+    
+    public int getInput() {
+        return this.input;
+    }
+    
+    public int getKeys(){
+        return this.keys;
+    }
+    
+    public void setKeys(int k){
+        this.keys = k;
+    }
+    
         
     /**
      * @param args the command line arguments
