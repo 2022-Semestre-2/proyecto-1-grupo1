@@ -88,6 +88,26 @@ public class CPU {
         
         this.processInstructionIndex++;
     }
+    public void executeAll(Memory memory,Memory disk,CPU cpu1, CPU cpu2, PCController cont){
+        while(!this.processQueue.isEmpty()){
+            this.executeInstruction(memory, disk, cpu1, cpu2, cont);            
+            
+            if(this.cpuName.equals("CPU1")){
+                cont.updatePCBStatusTable();
+                cont.loadPCBstoMem();                                        
+                cont.getApp().getExecutionTables()[0].getModel().setValueAt(" ", cpu1.getCurrentProcessIndex(),cpu1.getProcessInstructionIndex());     
+                cont.updateCPUComponents(cpu1);
+            } else {
+                cont.updatePCBStatusTable();
+                cont.loadPCBstoMem();          
+                cont.getApp().getExecutionTables()[1].getModel().setValueAt(" ", cpu2.getCurrentProcessIndex(),cpu2.getProcessInstructionIndex());     
+                cont.updateCPUComponents(cpu2);                
+                
+            }
+            
+            
+        }
+    }
     public ArrayList<String> getPCBRegisterInfo(){
         return this.currentPcbRegistersStatus;
     }

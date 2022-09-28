@@ -68,6 +68,7 @@ public class PCB {
     private String currentCPU;
     private String status;    
     private int memoryStartingIndex;
+    private Instruction currentInstructionWeight;
     
     private boolean programFinished = false;   
     //Bandera para el comparador cmp ax, dx. Si son iguales la bandera se pone en true y por ende se usara el comparador
@@ -203,7 +204,26 @@ public class PCB {
         MemoryRegister instruction = (MemoryRegister)register.get();
         String result = String.format("%16s", Integer.toBinaryString(instruction.getValue() & 0xFFFF)).replace(' ', '0');
         Integer res = Integer.parseInt(result,2);
-
+        if(currentInstructionWeight ==null){
+            currentInstructionWeight = new Instruction(instruction.getOperator());
+            
+        } 
+        if(currentInstructionWeight.isReady()){                
+                currentInstructionWeight = null;
+        } else {
+            currentInstructionWeight.registerExe();
+            ArrayList<String> list = new ArrayList<>();
+            list.add(this.ax.getValue().toString());
+            list.add(this.bx.getValue().toString());
+            list.add(this.cx.getValue().toString());
+            list.add(this.dx.getValue().toString());
+            list.add(this.ac.getValue().toString());
+            list.add(this.ir.toString());            
+            list.add(this.pc.toString());
+            list.add(instruction.toBinaryString());
+            list.add(String.valueOf(this.flag09H));
+            return list;
+        }           
         this.ir = Integer.parseInt(instruction.getOperator().toString() + instruction.getAdress().toString() + res.toString());
         switch (instruction.getOperator()) {                
              case 3 -> executeMov(instruction);

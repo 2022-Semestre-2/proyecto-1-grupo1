@@ -771,7 +771,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/imgs/file (1).png"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Cargar Archivo .asm"/>
+        <Property name="text" type="java.lang.String" value="Cargar Archivos .asm"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btmLoadActionPerformed"/>

@@ -28,15 +28,13 @@ public class PCController {
     //Mostrar los procesos en 
     //Cola de trabajo
     private CPU cpu1;
-    private CPU cpu2;
-    private Queue<PCB> processQueue;
+    private CPU cpu2;    
     private ProcessManager app;
     private Memory memory;
     private JTable memoryTable;    
     private JTable diskTable;
     private JTable keyboardTable;
-    private JTextField inputArea;
-    private int memSize;    
+    private JTextField inputArea;        
     private Memory disk;
     private javax.swing.JButton btnFileLoad;
     //Botones que consultan los PCB's
@@ -78,10 +76,21 @@ public class PCController {
                 btnStepActionPerformed(evt);
             }
         });
+        this.app.getButtonClear().addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClear(evt);
+            }
+        });
         this.memory = new Memory(app.getMemSize());
         this.disk = new Memory(app.getDiskSize());
     }
-    
+    public void btnClear(java.awt.event.ActionEvent evt) { 
+        this.memory = new Memory(app.getMemSize());
+        this.disk = new Memory(app.getDiskSize());
+        this.app.dispose();
+        loadApp();
+
+    }
     private void loadApp(){
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -99,6 +108,7 @@ public class PCController {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ProcessManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        
         this.app  = new ProcessManager();
         this.app.setVisible(true);
     }
@@ -165,7 +175,7 @@ public class PCController {
     
     
     
-    private void loadPCBstoMem(){
+    public void loadPCBstoMem(){
                              
         int i =0;
         for(Optional<Register> reg: this.memory.getInstructions()){
@@ -204,26 +214,9 @@ public class PCController {
        
        
     }               
-    private void btnExeAllActionPerformed(java.awt.event.ActionEvent evt) {  
-        
-        
-        int i = 0;
-        while (!processQueue.isEmpty()){
-            PCB pcb = processQueue.remove();   
-            System.out.println(pcb.getPCBinstrucctionSize());
-            for(int j = 0 ; j < pcb.getPCBinstrucctionSize();j++){
-                //pcb.executeInstruction(this.app.getInput());
-                System.out.println("PCb executed");
-                app.getExecutionTables()[0].getModel().setValueAt(" ", i, j+1);
-                //Tabla añadir proceso y colocar con X
-            }
-            i++;
-            
-            
-            
-        }
-        
-       
+    private void btnExeAllActionPerformed(java.awt.event.ActionEvent evt) {          
+        this.cpu1.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);
+        this.cpu2.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);        
     }        
     public ProcessManager getApp(){
         return this.app;
@@ -234,11 +227,11 @@ public class PCController {
         PCController c = this;
         this.cpu1.executeInstruction(this.memory, this.disk,this.cpu1,this.cpu2,c);
         this.updatePCBStatusTable();
-        loadPCBstoMem();
+        this.loadPCBstoMem();
         this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());     
         this.updateCPUComponents(this.cpu1);
         this.cpu2.executeInstruction(this.memory,this.disk,this.cpu1,this.cpu2, c);
-        loadPCBstoMem();
+        this.loadPCBstoMem();
         this.updatePCBStatusTable();
         this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());
         this.updateCPUComponents(this.cpu2);
@@ -251,7 +244,7 @@ public class PCController {
                 
        
     }                                           
-    private void updatePCBStatusTable(){        
+    public void updatePCBStatusTable(){        
          DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int i, int j) {return false;};
@@ -269,7 +262,8 @@ public class PCController {
             i++;
         }
     }
-    private void updateCPUComponents(CPU cpu){
+    
+    public void updateCPUComponents(CPU cpu){
         /**list.add(this.ax.getValue().toString());
             list.add(this.bx.getValue().toString());
             list.add(this.cx.getValue().toString());

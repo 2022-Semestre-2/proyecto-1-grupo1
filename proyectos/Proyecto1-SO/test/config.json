@@ -1,5 +1,22 @@
 {
     "MemorySize": 180,
     "DiskSize": 300,
-    "Stack": 5
+    "Stack": 5,
+    "load": 2,
+    "store": 2,
+    "mov": 1,
+    "add": 3,
+    "sub": 3,
+    "inc": 1,
+    "dec": 1,
+    "int": 1,
+    "swap": 1,
+    "jmp": 2,
+    "jne": 2,
+    "je": 2,
+    "cmp": 2,
+    "param": 3,
+    "push": 1,
+    "pop": 1
+    
 }

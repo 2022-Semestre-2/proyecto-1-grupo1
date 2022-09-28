@@ -36,6 +36,9 @@ public final class ProcessManager extends javax.swing.JFrame {
      * Creates new form ProcessManager
      */
     public ProcessManager() {
+        this.reset();
+    }
+    public void reset(){
         initComponents(); 
         loadJSONfile();        
         modifyProcessExecutionTable(10);
@@ -44,6 +47,7 @@ public final class ProcessManager extends javax.swing.JFrame {
         loadProcessTable();
         loadCPU2Table();
         loadKeyboardTable();
+        
     }
     
     public void  modifyProcessExecutionTable(int n){
@@ -708,7 +712,7 @@ public final class ProcessManager extends javax.swing.JFrame {
 
         btmLoad.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         btmLoad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/file (1).png"))); // NOI18N
-        btmLoad.setText("Cargar Archivo .asm");
+        btmLoad.setText("Cargar Archivos .asm");
         btmLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btmLoadActionPerformed(evt);
@@ -886,7 +890,9 @@ public final class ProcessManager extends javax.swing.JFrame {
     public javax.swing.JButton getBtnExeAll(){
         return this.btnExecute;
     }
-    
+    public javax.swing.JButton getButtonClear(){
+        return this.btnClear;
+    }
     public JTextField getTextField() {
         return this.jInputKeyboard;
     }
