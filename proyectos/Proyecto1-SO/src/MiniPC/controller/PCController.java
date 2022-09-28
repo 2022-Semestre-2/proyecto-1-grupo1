@@ -154,8 +154,13 @@ public class PCController {
                 //Se agregan a la cola de espera del CPU
                     int oneOrCero = (int)Math.round(Math.random());
                     if(oneOrCero==1){
-                        PCB pcb = new PCB("Listo");                        
+                        PCB pcb = new PCB("Listo"); 
+                        
                         pcb.setLoader(fileList[i].toString());                                                        
+                        if(pcb.getPCBData().size()+pcb.getInstructions().size() >this.memory.getSize()){
+                            JOptionPane.showMessageDialog(this.app, "El archivo " + fileList[i] + " no se cargó debido a que su tamaño no cabe en memoria\n","MiniPC", 0);
+                            continue;
+                        }
                         
                         this.pcbList.add(pcb);
                         if(!this.memory.allocatePCB(pcb)){
@@ -169,7 +174,10 @@ public class PCController {
                     } else {
                         PCB pcb = new PCB("Listo");
                         pcb.setLoader(fileList[i].toString());                                    
-                        
+                        if(pcb.getPCBData().size()+pcb.getInstructions().size() >this.memory.getSize()){
+                            JOptionPane.showMessageDialog(this.app, "El archivo " + fileList[i] + " no se cargó debido a que su tamaño no cabe en memoria\n","MiniPC", 0);
+                            continue;
+                        }
                         this.pcbList.add(pcb);                        
                         //Si no cabe en memoria se coloca en disco
                         if(!this.memory.allocatePCB(pcb)){
