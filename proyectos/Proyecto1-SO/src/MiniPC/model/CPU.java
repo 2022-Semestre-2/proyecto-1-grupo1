@@ -5,15 +5,12 @@
 package MiniPC.model;
 
 import MiniPC.controller.PCController;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -50,9 +47,9 @@ public class CPU {
         int minutes = locaDate.getMinute();
         time.setFinishHour(hours);
         time.setFinishMinute(minutes);
-        time.setDuration(this.currentPcb.getPCBinstrucctionSize());
-        time.setIndex(currentProcessIndex);
-        stats.add(time);
+        time.setDuration(this.currentPcb.getPCBDuration());
+        time.setIndex(currentProcessIndex+1);
+        this.stats.add(time);
     }
     
     
@@ -117,13 +114,33 @@ public class CPU {
             
             
              
-            this.currentPcb = this.processQueue.peek();           
+            this.currentPcb = this.processQueue.peek();       
+            
+
             this.currentProcessIndex++;
             this.processInstructionIndex = 0;            
             
         }
         //Estado del PCB
-       
+       DefaultTableModel model3 = null;
+            
+            if(this.cpuName.equals("CPU1")){
+                model3 = (DefaultTableModel) cont.getApp().getExecutionTables()[0].getModel();
+            } else {
+                model3 = (DefaultTableModel) cont.getApp().getExecutionTables()[1].getModel();
+            }
+            if(model3.getRowCount()<=currentProcessIndex+1){
+                Vector row = new Vector();
+                row.add("P"+(currentProcessIndex+1));      
+                Vector row2 = new Vector();
+                row2.add("P"+(currentProcessIndex+2)); 
+                model3.addRow(row);
+                model3.addRow(row2);
+                
+            }
+          
+            
+            
         this.currentPcb.setStatus("Exec");
         this.currentPcbRegistersStatus = this.currentPcb.executeInstruction(cont);                
         

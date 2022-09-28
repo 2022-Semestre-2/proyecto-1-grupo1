@@ -77,9 +77,9 @@ public class PCB {
     private Stack<Integer> stack = new Stack();    
     //CPU_Menu menu = new CPU_Menu();
     private boolean flag09H = false;
-    private boolean flag10h = false;
-    private int seconds = 0;
     
+    
+    private int duration = 0;
     public PCB(){        
         this.registerAddressMapper.put(1, ax);
         this.registerAddressMapper.put(2, bx);
@@ -211,6 +211,9 @@ public class PCB {
     public int getProgramCounter(){
         return this.pc;
     }
+    public int getPCBDuration(){
+        return this.duration;
+    }
     //Ejecuta la instruccion segun el PC (una a una)
     public ArrayList<String> executeInstruction(PCController input){
         Optional<Register> register = memory.getInstructions().get(this.pc);     
@@ -221,6 +224,7 @@ public class PCB {
         Integer res = Integer.parseInt(result,2);
         if(currentInstructionWeight ==null){
             currentInstructionWeight = new Instruction(instruction.getOperator());
+            this.duration +=  this.currentInstructionWeight.getWeight();              
             
         } 
         if(currentInstructionWeight.isReady()){                
@@ -237,6 +241,7 @@ public class PCB {
             list.add(this.pc.toString());
             list.add(instruction.toBinaryString());
             list.add(String.valueOf(this.flag09H));
+            this.flag09H = false;
             return list;
         }           
         this.ir = Integer.parseInt(instruction.getOperator().toString() + instruction.getAdress().toString() + res.toString());
@@ -276,6 +281,7 @@ public class PCB {
             list.add(instruction.toBinaryString());
             
             list.add(String.valueOf(this.flag09H));
+            this.flag09H = false;
             
             /**
                 System.out.println("-------------------------------");
@@ -512,9 +518,9 @@ public class PCB {
         
         int input = Integer.parseInt(JOptionPane.showInputDialog(null, ">>>", "MiniPC", 1));
         this.dx.setValue(input);
-        int key = cont.getApp().getKeys();
-        cont.getApp().getJTableKeyboard().setValueAt(input, key++, 0);
-        cont.getApp().setKeys(key++);
+        //int key = cont.getApp().getKeys();
+        cont.getApp().getJTableKeyboard().setValueAt(input, cont.getApp().getKeys(), 0);
+        cont.getApp().setKeys(cont.getApp().getKeys()+1);
         
     }
     

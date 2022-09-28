@@ -95,8 +95,13 @@ public class PCController {
     public void btnClear(java.awt.event.ActionEvent evt) { 
         this.memory = new Memory(app.getMemSize());
         this.disk = new Memory(app.getDiskSize());
-        this.app.dispose();
-        loadApp();
+        //this.app.dispose();
+        this.app.reset();
+        this.pcbList.clear();
+        updatePCBStatusTable();
+        this.cpu1 = new CPU("CPU1");
+        this.cpu2 = new CPU("CPU2");
+        
 
     }
     
@@ -311,8 +316,8 @@ public class PCController {
         }
         if (infoBPC.get(8).equals("true")) {
             this.app.getJTableKeyboard().setValueAt(infoBPC.get(3), this.app.getKeys(), 0);
-            int k = this.app.getKeys();
-            this.app.setKeys(k++);
+            
+            this.app.setKeys(this.app.getKeys()+1);
         }
     }
     

@@ -82,8 +82,7 @@ public class Memory {
                     nextProcessToExe  = this.pcbs.get(i+1);                    
                     nextProcessToExe.setProgramCounter(current.getMemoryStartingIndex()+nextProcessToExe.getPCBData().size());                    
                     nextProcessToExe.setMemoryStartingIndex(current.getMemoryStartingIndex());                                                                                                                           
-                    System.out.println("inNext toDel newStartIndex: "+nextProcessToExe.getMemoryStartingIndex());
-                    System.out.println("inNext toDel newindexSize: "+(nextProcessToExe.getMemoryStartingIndex()+nextProcessToExe.getPCBData().size()+nextProcessToExe.getInstructions().size()));
+                   
                     current = nextProcessToExe;                    
                     k = i+1;
                     break;
@@ -94,17 +93,14 @@ public class Memory {
                 
             }
         }
-        System.out.println("KVALUE: "+k);
-        System.out.println("QUEUE LENGTH: "+this.pcbs.size());
+       
         for(int r = k ;r < this.pcbs.size(); r++){
             try{                                        
                 nextProcessToExe  = this.pcbs.get(r+1); 
                 int finalIndexCurr = current.getMemoryStartingIndex()+current.getPCBData().size()+current.getInstructions().size();
                 nextProcessToExe.setProgramCounter(finalIndexCurr+nextProcessToExe.getPCBData().size());                    
                 nextProcessToExe.setMemoryStartingIndex(finalIndexCurr);                                                                                                                           
-                current = nextProcessToExe;
-                System.out.println("Next toDel newStartIndex: "+nextProcessToExe.getMemoryStartingIndex());
-                System.out.println("Next toDel newindexSize: "+(nextProcessToExe.getMemoryStartingIndex()+nextProcessToExe.getPCBData().size()+nextProcessToExe.getInstructions().size()));
+                current = nextProcessToExe;              
             } catch(IndexOutOfBoundsException e){
                     
             }

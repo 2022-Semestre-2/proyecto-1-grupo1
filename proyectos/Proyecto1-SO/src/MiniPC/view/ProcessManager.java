@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Vector;
 import javax.swing.JFileChooser;
 
 import javax.swing.JOptionPane;
@@ -36,20 +37,60 @@ public final class ProcessManager extends javax.swing.JFrame {
      * Creates new form ProcessManager
      */
     public ProcessManager() {
-        this.reset();
-    }
-    public void reset(){
-        initComponents(); 
+           initComponents(); 
         loadJSONfile();        
-        modifyProcessExecutionTable(this.memorySize);
+        modifyProcessExecutionTable(5);
         loadMemoryTable();
         loadDiskTable();
         loadProcessTable();
         loadCPU2Table();
         loadKeyboardTable();
+    }
+      public void reset(){
+          int i,j;
+          i = 0;
+          j = 1;
+          while(this.jTableProcessExecution.getValueAt(i, j)!=null){
+               while(this.jTableProcessExecution.getValueAt(i, j)!= null){
+                    jTableProcessExecution.setValueAt(null, i, j);
+                    j++;
+                }
+               i++;
+               j = 1;
+              
+          }
+          i = 0;
+          j = 1;
+         while(this.jTableProcessExecution1.getValueAt(i, j)!=null){
+               while(this.jTableProcessExecution1.getValueAt(i, j)!= null){
+                    jTableProcessExecution1.setValueAt(null, i, j);
+                    j++;
+                }
+               i++;
+               j = 1;
+              
+          }
+       
+            
+     
+        this.cleanLables();
+        this.resetKeys();
+        
+        
         
     }
     
+    private void cleanLables(){
+        javax.swing.JLabel[] l1 = this.getTextLabelsCpu("CPU1");
+        javax.swing.JLabel[] l2 = this.getTextLabelsCpu("CPU2");
+        int k = 0;
+        for(javax.swing.JLabel l: l1){
+            l.setText("___");
+            l2[k].setText("___");
+            k++;
+        }
+            
+    }
     public void  modifyProcessExecutionTable(int n){
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -61,7 +102,7 @@ public final class ProcessManager extends javax.swing.JFrame {
         };       
         model.setRowCount(n);
         model2.setRowCount(n);
-        int r  = this.memorySize;
+        int r  = this.memorySize*5;
         for(int i = 0 ; i < r ;  i++){            
             if(model.getColumnCount()< i+1){                
                 model.addColumn(i);                
@@ -102,6 +143,7 @@ public final class ProcessManager extends javax.swing.JFrame {
         //JScrollPane js=new JScrollPane(this);
         //JScrollPane.setViewportView(jTableProcessExecution);
         //this.add(js);
+          
         
         
         
@@ -126,7 +168,7 @@ public final class ProcessManager extends javax.swing.JFrame {
     
     
     public JTable[] getExecutionTables(){
-        JTable[] tables= {this.jTableProcessExecution,this.jTableProcessExecution1};
+        JTable[] tables= {this.jTableProcessExecution1,this.jTableProcessExecution};
         return tables;
     }
     
@@ -321,7 +363,6 @@ public final class ProcessManager extends javax.swing.JFrame {
         jTableKeyboard = new javax.swing.JTable();
         btmLoad = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
-        btnConfig = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         jTableProcessExecution = new javax.swing.JTable() {
 
@@ -732,14 +773,6 @@ public final class ProcessManager extends javax.swing.JFrame {
         jLabel18.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
         jLabel18.setText("Pantalla");
 
-        btnConfig.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        btnConfig.setText("Configuración");
-        btnConfig.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConfigActionPerformed(evt);
-            }
-        });
-
         jTableProcessExecution.setAutoCreateRowSorter(true);
         jTableProcessExecution.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTableProcessExecution.setModel(new javax.swing.table.DefaultTableModel(
@@ -795,8 +828,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                                             .addComponent(btnExecute, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(btnStepByStep)
                                             .addComponent(btnStats)
-                                            .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -854,9 +886,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                         .addComponent(btnStats, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(50, 50, 50)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(152, 152, 152)))
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -888,11 +918,6 @@ public final class ProcessManager extends javax.swing.JFrame {
         setKeys(this.keys++);
         jTableKeyboard.setValueAt(evt.getActionCommand(), this.keys, 0);
     }//GEN-LAST:event_jInputKeyboardActionPerformed
-
-    private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
-        int MemorySize = Integer.parseInt(JOptionPane.showInputDialog("Digite el tamaño de la memoria"));
-        int DiskSize = Integer.parseInt(JOptionPane.showInputDialog("Digite el tamaño del disco"));
-    }//GEN-LAST:event_btnConfigActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         // TODO add your handling code here:
@@ -971,6 +996,12 @@ public final class ProcessManager extends javax.swing.JFrame {
     public javax.swing.JButton  getLoadBtn(){        
         return this.btmLoad;
     }
+    public void resetKeys(){
+        for(int i = 0 ; i < this.keys; i++){
+            this.jTableKeyboard.setValueAt(null, i, 0);
+        }
+        this.setKeys(0);
+    }
     public javax.swing.JLabel[] getTextLabelsCpu(String cpuName){
         
         if(cpuName.equals("CPU1")){
@@ -988,7 +1019,6 @@ public final class ProcessManager extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btmLoad;
     private javax.swing.JButton btnClear;
-    private javax.swing.JButton btnConfig;
     private javax.swing.JButton btnExecute;
     private javax.swing.JButton btnStats;
     private javax.swing.JButton btnStepByStep;
