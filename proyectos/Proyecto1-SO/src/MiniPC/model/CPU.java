@@ -148,6 +148,9 @@ public class CPU {
         
         this.processInstructionIndex++;
     }
+    public Queue<PCB> getProcesesQueue(){
+        return this.processQueue;
+    }
     public void executeAll(Memory memory,Memory disk,CPU cpu1, CPU cpu2, PCController cont){
         while(!this.processQueue.isEmpty()){            
             
@@ -172,9 +175,7 @@ public class CPU {
             }                        
             
         }
-        if(!this.processQueue.isEmpty()){
-                this.executeAll(memory, disk, cpu1, cpu2, cont);
-            }
+        
     }
     public ArrayList<String> getPCBRegisterInfo(){
         return this.currentPcbRegistersStatus;

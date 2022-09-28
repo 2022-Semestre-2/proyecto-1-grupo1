@@ -242,9 +242,12 @@ public class PCController {
        
        
     }               
-    private void btnExeAllActionPerformed(java.awt.event.ActionEvent evt) {          
-        this.cpu1.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);
-        this.cpu2.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);        
+    private void btnExeAllActionPerformed(java.awt.event.ActionEvent evt) { 
+        while(!this.cpu1.getProcesesQueue().isEmpty() || !this.cpu2.getProcesesQueue().isEmpty()){
+            this.cpu1.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);
+             this.cpu2.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);        
+        }
+        
     }        
     public ProcessManager getApp(){
         return this.app;
