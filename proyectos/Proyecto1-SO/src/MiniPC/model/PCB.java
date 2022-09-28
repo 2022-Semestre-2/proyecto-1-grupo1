@@ -105,6 +105,15 @@ public class PCB {
         this.registerAddressMapper.put(4, dx);        
                                
     }
+     public PCB(String status){        
+         this.currentInstruction = 0;
+         this.status = status;         
+        this.registerAddressMapper.put(1, ax);
+        this.registerAddressMapper.put(2, bx);
+        this.registerAddressMapper.put(3, cx);
+        this.registerAddressMapper.put(4, dx);        
+                               
+    }
      
      public void setStatus(String state){
          this.status = state;
@@ -140,9 +149,14 @@ public class PCB {
         }
         String cpuCurr = this.currentCPU;
         String cpuToBinary = "";
-        for(int i = 0; i < cpuCurr.toCharArray().length; i ++){
-           cpuToBinary+=Integer.toBinaryString(cpuCurr.toCharArray()[i]);          
-       }
+        if(this.currentCPU!=null){
+            for(int i = 0; i < cpuCurr.toCharArray().length; i ++){
+                cpuToBinary+=Integer.toBinaryString(cpuCurr.toCharArray()[i]);          
+            }             
+        } else {
+            cpuToBinary = Integer.toBinaryString(" ".toCharArray()[0]);
+        }
+        
         returnArr.add(Integer.parseInt(cpuToBinary,2));
         Long time = new Date().getTime();
         returnArr.add(time.intValue());

@@ -41,7 +41,7 @@ public final class ProcessManager extends javax.swing.JFrame {
     public void reset(){
         initComponents(); 
         loadJSONfile();        
-        modifyProcessExecutionTable(10);
+        modifyProcessExecutionTable(this.memorySize);
         loadMemoryTable();
         loadDiskTable();
         loadProcessTable();

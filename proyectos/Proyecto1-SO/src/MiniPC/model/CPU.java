@@ -30,8 +30,10 @@ public class CPU {
         if(this.processQueue.isEmpty()){
             if(this.currentPcbRegistersStatus!=null && !this.currentPcbRegistersStatus.isEmpty()){
                 this.currentPcbRegistersStatus.clear();
+                
             }
-            
+                   
+                
             return;
         }
         if(this.currentPcb.programFinished()){            
@@ -52,10 +54,13 @@ public class CPU {
                        
                        memory.allocatePCB(process);
                        process.setStatus("Listo");
+                       this.currentPcb = this.processQueue.peek();                                  
                        
                    }
-                    //memory.deallocatePCB(removed);                   
-                   this.currentPcbRegistersStatus.clear();
+                    //memory.deallocatePCB(removed);                         
+                    this.currentProcessIndex++;
+                    this.processInstructionIndex = 0;                            
+                    this.currentPcbRegistersStatus.clear();
                    return;
             }
             if(!disk.getProcessesLoaded().isEmpty() && memory.PCBfits(disk.getProcessesLoaded().getFirst())){
@@ -64,10 +69,13 @@ public class CPU {
                         disk.deallocatePCB(process);
                        int oneOrCero = (int)Math.round(Math.random());
                         if(oneOrCero==1){
-                            cpu1.addPCBtoQueue(process);                            
+                            cpu1.addPCBtoQueue(process);  
+                            process.setCurrentCPU("CPU1");
                         } else {
                             cpu2.addPCBtoQueue(process);                            
+                            process.setCurrentCPU("CPU2");
                         }
+                        
                         process.setStatus("Listo");
                        
                        memory.allocatePCB(process);
@@ -89,18 +97,24 @@ public class CPU {
         this.processInstructionIndex++;
     }
     public void executeAll(Memory memory,Memory disk,CPU cpu1, CPU cpu2, PCController cont){
-        while(!this.processQueue.isEmpty()){
-            this.executeInstruction(memory, disk, cpu1, cpu2, cont);            
+        while(!this.processQueue.isEmpty()){            
             
             if(this.cpuName.equals("CPU1")){
+                this.executeInstruction(memory, disk, cpu1, cpu2, cont);            
                 cont.updatePCBStatusTable();
                 cont.loadPCBstoMem();                                        
-                cont.getApp().getExecutionTables()[0].getModel().setValueAt(" ", cpu1.getCurrentProcessIndex(),cpu1.getProcessInstructionIndex());     
+                if(cpu1.getProcessInstructionIndex()!=0){
+                    cont.getApp().getExecutionTables()[0].getModel().setValueAt(" ", cpu1.getCurrentProcessIndex(),cpu1.getProcessInstructionIndex());     
+                }                
                 cont.updateCPUComponents(cpu1);
             } else {
+                this.executeInstruction(memory, disk, cpu1, cpu2, cont);            
                 cont.updatePCBStatusTable();
                 cont.loadPCBstoMem();          
-                cont.getApp().getExecutionTables()[1].getModel().setValueAt(" ", cpu2.getCurrentProcessIndex(),cpu2.getProcessInstructionIndex());     
+                 if(cpu2.getProcessInstructionIndex()!=0){
+                    cont.getApp().getExecutionTables()[1].getModel().setValueAt(" ", cpu2.getCurrentProcessIndex(),cpu2.getProcessInstructionIndex());     
+                }    
+                
                 cont.updateCPUComponents(cpu2);                
                 
             }

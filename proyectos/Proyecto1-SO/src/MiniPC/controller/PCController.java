@@ -126,7 +126,7 @@ public class PCController {
                 //Se agregan a la cola de espera del CPU
                     int oneOrCero = (int)Math.round(Math.random());
                     if(oneOrCero==1){
-                        PCB pcb = new PCB("Listo", "CPU1");
+                        PCB pcb = new PCB("Listo");                        
                         pcb.setLoader(fileList[i].toString());                                                        
                         
                         this.pcbList.add(pcb);
@@ -139,7 +139,7 @@ public class PCController {
                         }
                         
                     } else {
-                        PCB pcb = new PCB("Listo", "CPU2");
+                        PCB pcb = new PCB("Listo");
                         pcb.setLoader(fileList[i].toString());                                    
                         
                         this.pcbList.add(pcb);                        
@@ -228,12 +228,18 @@ public class PCController {
         this.cpu1.executeInstruction(this.memory, this.disk,this.cpu1,this.cpu2,c);
         this.updatePCBStatusTable();
         this.loadPCBstoMem();
-        this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());     
+        if(this.cpu1.getProcessInstructionIndex()!=0){
+            this.app.getExecutionTables()[0].getModel().setValueAt(" ", this.cpu1.getCurrentProcessIndex(), this.cpu1.getProcessInstructionIndex());     
+        }
+        
         this.updateCPUComponents(this.cpu1);
         this.cpu2.executeInstruction(this.memory,this.disk,this.cpu1,this.cpu2, c);
         this.loadPCBstoMem();
         this.updatePCBStatusTable();
-        this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());
+        if(this.cpu2.getProcessInstructionIndex()!=0){
+            this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());
+        }    
+        
         this.updateCPUComponents(this.cpu2);
         
         

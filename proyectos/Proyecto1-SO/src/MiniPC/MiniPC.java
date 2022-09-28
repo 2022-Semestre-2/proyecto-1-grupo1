@@ -42,7 +42,7 @@ public class MiniPC {
         }
         */
         
-        PCController c = new PCController();                          
+       PCController c = new PCController();                          
        c.init();
        /*
        Memory mem = new Memory(200);
