@@ -8,6 +8,7 @@ import MiniPC.model.CPU;
 import MiniPC.model.FileLoader;
 import MiniPC.model.Memory;
 import MiniPC.model.PCB;
+import MiniPC.model.ProcessTime;
 import MiniPC.model.Register;
 import MiniPC.view.ProcessManager;
 import java.io.File;
@@ -38,7 +39,8 @@ public class PCController {
     private Memory disk;
     private javax.swing.JButton btnFileLoad;
     //Botones que consultan los PCB's
-    private javax.swing.JButton btnStepByStep;    
+    private javax.swing.JButton btnStepByStep;
+    private javax.swing.JButton btnStats;
     
     private javax.swing.JButton btnExeAll;
     private ArrayList<PCB> pcbList = new ArrayList<PCB>();
@@ -56,6 +58,7 @@ public class PCController {
         this.cpu2 = new CPU("CPU2");
         this.btnStepByStep = this.app.getStepByStep();
         this.btnFileLoad = this.app.getLoadBtn();
+        this.btnStats = this.app.getButtonStats();
         this.memoryTable = app.getJTableMemory();
         this.diskTable = app.getJTableDisk();
         this.keyboardTable = this.app.getJTableKeyboard();
@@ -81,6 +84,11 @@ public class PCController {
                 btnClear(evt);
             }
         });
+        this.app.getButtonStats().addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStats(evt);
+            }
+        });
         this.memory = new Memory(app.getMemSize());
         this.disk = new Memory(app.getDiskSize());
     }
@@ -91,6 +99,21 @@ public class PCController {
         loadApp();
 
     }
+    
+    public void btnStats(java.awt.event.ActionEvent evt) {
+        String process = "-CPU1-\n";
+        for (int i = 0; i < this.cpu1.getStats().size(); i++) {
+            process += this.cpu1.getStats().get(i).toString();
+            process += "\n";
+        }
+        process += "\n-CPU2-\n";
+        for (int i = 0; i < this.cpu2.getStats().size(); i++) {
+            process += this.cpu2.getStats().get(i).toString();
+            process += "\n";
+        }
+        JOptionPane.showMessageDialog(app, process, "MiniPC", 1);
+    }
+    
     private void loadApp(){
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

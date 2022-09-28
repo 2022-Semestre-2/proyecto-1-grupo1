@@ -78,6 +78,7 @@ public class PCB {
     //CPU_Menu menu = new CPU_Menu();
     private boolean flag09H = false;
     private boolean flag10h = false;
+    private int seconds = 0;
     
     public PCB(){        
         this.registerAddressMapper.put(1, ax);
@@ -211,7 +212,7 @@ public class PCB {
         return this.pc;
     }
     //Ejecuta la instruccion segun el PC (una a una)
-    public ArrayList<String> executeInstruction(PCController input){                     
+    public ArrayList<String> executeInstruction(PCController input){
         Optional<Register> register = memory.getInstructions().get(this.pc);     
         
         
@@ -294,7 +295,6 @@ public class PCB {
             this.currentInstruction++;
             
         
-            
             
             return list;
        
@@ -510,7 +510,7 @@ public class PCB {
     }
     private void INT10H( PCController cont){
         
-        int input = Integer.parseInt(JOptionPane.showInputDialog(null, ">>>  ",""));
+        int input = Integer.parseInt(JOptionPane.showInputDialog(null, ">>>", "MiniPC", 1));
         this.dx.setValue(input);
         int key = cont.getApp().getKeys();
         cont.getApp().getJTableKeyboard().setValueAt(input, key++, 0);

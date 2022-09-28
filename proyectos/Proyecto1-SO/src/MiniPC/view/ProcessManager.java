@@ -378,6 +378,11 @@ public final class ProcessManager extends javax.swing.JFrame {
         btnClear.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/clean.png"))); // NOI18N
         btnClear.setText("Limpiar");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         btnExecute.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         btnExecute.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/administration.png"))); // NOI18N
@@ -391,6 +396,11 @@ public final class ProcessManager extends javax.swing.JFrame {
         btnStats.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         btnStats.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/analytics.png"))); // NOI18N
         btnStats.setText("Estadísticas");
+        btnStats.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStatsActionPerformed(evt);
+            }
+        });
 
         jTableProcess.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -884,6 +894,14 @@ public final class ProcessManager extends javax.swing.JFrame {
         int DiskSize = Integer.parseInt(JOptionPane.showInputDialog("Digite el tamaño del disco"));
     }//GEN-LAST:event_btnConfigActionPerformed
 
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void btnStatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnStatsActionPerformed
+
     public javax.swing.JButton getStepByStep(){
         return this.btnStepByStep;
     }
@@ -893,6 +911,11 @@ public final class ProcessManager extends javax.swing.JFrame {
     public javax.swing.JButton getButtonClear(){
         return this.btnClear;
     }
+    
+    public javax.swing.JButton getButtonStats(){
+        return this.btnStats;
+    }
+    
     public JTextField getTextField() {
         return this.jInputKeyboard;
     }

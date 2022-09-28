@@ -5,7 +5,13 @@
 package MiniPC.model;
 
 import MiniPC.controller.PCController;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -21,12 +27,38 @@ public class CPU {
     private Queue<PCB> processQueue = new LinkedList<PCB>();
     private int processInstructionIndex;    
     private  ArrayList<String> currentPcbRegistersStatus;
+    private ArrayList<ProcessTime> stats = new ArrayList<ProcessTime>();
+    
     public CPU(String name){
         this.currentProcessIndex = 0;
         this.processInstructionIndex = 0;
         this.cpuName = name;
     }
+    
+    
+    public void startTime(ProcessTime time){
+        LocalDateTime locaDate = LocalDateTime.now();
+        int hours  = locaDate.getHour();
+        int minutes = locaDate.getMinute();
+        time.setStartHour(hours);
+        time.setStartMinute(minutes);
+    }
+    
+    public void finishTime(ProcessTime time) {
+        LocalDateTime locaDate = LocalDateTime.now();
+        int hours  = locaDate.getHour();
+        int minutes = locaDate.getMinute();
+        time.setFinishHour(hours);
+        time.setFinishMinute(minutes);
+        time.setDuration(this.currentPcb.getPCBinstrucctionSize());
+        time.setIndex(currentProcessIndex);
+        stats.add(time);
+    }
+    
+    
     public void executeInstruction(Memory memory,Memory disk,CPU cpu1, CPU cpu2, PCController cont){
+        ProcessTime time = new ProcessTime();
+        startTime(time);
         if(this.processQueue.isEmpty()){
             if(this.currentPcbRegistersStatus!=null && !this.currentPcbRegistersStatus.isEmpty()){
                 this.currentPcbRegistersStatus.clear();
@@ -36,7 +68,8 @@ public class CPU {
                 
             return;
         }
-        if(this.currentPcb.programFinished()){            
+        if(this.currentPcb.programFinished()){ 
+            finishTime(time);
             PCB removed = processQueue.remove();
             removed.setStatus("Fin");               
             memory.deallocatePCB(removed);    
@@ -145,6 +178,8 @@ public class CPU {
 
     }
     
-    
+    public ArrayList<ProcessTime> getStats() {
+        return this.stats;
+    }
     
 }
