@@ -39,7 +39,7 @@ public final class ProcessManager extends javax.swing.JFrame {
     public ProcessManager() {
            initComponents(); 
         loadJSONfile();        
-        modifyProcessExecutionTable(5);
+        modifyProcessExecutionTable(3);
         loadMemoryTable();
         loadDiskTable();
         loadProcessTable();

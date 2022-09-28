@@ -77,9 +77,11 @@ public class CPU {
                         disk.deallocatePCB(process);
                        int oneOrCero = (int)Math.round(Math.random());
                         if(oneOrCero==1){
-                            cpu1.addPCBtoQueue(process);                            
+                            cpu1.addPCBtoQueue(process); 
+                            process.setCurrentCPU("CPU1");
                         } else {
-                            cpu2.addPCBtoQueue(process);                            
+                            cpu2.addPCBtoQueue(process);
+                            process.setCurrentCPU("CPU2");                            
                         }
                        
                        memory.allocatePCB(process);
@@ -122,7 +124,7 @@ public class CPU {
             
         }
         //Estado del PCB
-       DefaultTableModel model3 = null;
+            DefaultTableModel model3 = null;
             
             if(this.cpuName.equals("CPU1")){
                 model3 = (DefaultTableModel) cont.getApp().getExecutionTables()[0].getModel();
@@ -131,9 +133,9 @@ public class CPU {
             }
             if(model3.getRowCount()<=currentProcessIndex+1){
                 Vector row = new Vector();
-                row.add("P"+(currentProcessIndex+1));      
+                row.add("P"+(currentProcessIndex+2));      
                 Vector row2 = new Vector();
-                row2.add("P"+(currentProcessIndex+2)); 
+                row2.add("P"+(currentProcessIndex+3)); 
                 model3.addRow(row);
                 model3.addRow(row2);
                 
@@ -167,10 +169,12 @@ public class CPU {
                 
                 cont.updateCPUComponents(cpu2);                
                 
-            }
-            
+            }                        
             
         }
+        if(!this.processQueue.isEmpty()){
+                this.executeAll(memory, disk, cpu1, cpu2, cont);
+            }
     }
     public ArrayList<String> getPCBRegisterInfo(){
         return this.currentPcbRegistersStatus;
