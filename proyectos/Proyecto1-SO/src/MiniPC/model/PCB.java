@@ -462,7 +462,7 @@ public class PCB {
             
             case 9 -> this.flag09H = true;
             case 10 -> INT10H( cont);
-            case 20 -> System.exit(0);
+            case 20 -> this.currentInstruction = this.getPCBinstrucctionSize();
             
             default -> {
                 
