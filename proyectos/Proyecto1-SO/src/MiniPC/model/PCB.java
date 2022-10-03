@@ -460,7 +460,7 @@ public class PCB {
         int value= reg.getValue();
         switch (value) {                
             
-            case 9 -> this.flag09H = true;
+            case 9 -> INT09H();
             case 10 -> INT10H( cont);
             case 20 -> this.currentInstruction = this.getPCBinstrucctionSize();
             
@@ -470,6 +470,13 @@ public class PCB {
         }
         
     }
+    
+    private void INT09H() {
+        this.flag09H = true;
+        JOptionPane.showMessageDialog(null,"Interrupcion de pantalla", "MiniPC", JOptionPane.INFORMATION_MESSAGE);
+    }
+        
+    
     
     private void executeJmp(MemoryRegister reg){
         this.pc = this.pc+reg.getValue();
@@ -517,12 +524,30 @@ public class PCB {
     }
     private void INT10H( PCController cont){
         
-        int input = Integer.parseInt(JOptionPane.showInputDialog(null, ">>>", "MiniPC", 1));
-        this.dx.setValue(input);
-        //int key = cont.getApp().getKeys();
-        cont.getApp().getJTableKeyboard().setValueAt(input, cont.getApp().getKeys(), 0);
-        cont.getApp().setKeys(cont.getApp().getKeys()+1);
-        
+        boolean bandera = true;
+        while (bandera) {   
+            
+            String input = JOptionPane.showInputDialog(null, ">>>", "MiniPC", JOptionPane.QUESTION_MESSAGE);
+            
+            try {
+                int intValue = Integer.parseInt(input);
+                if (intValue >= 0 && intValue < 256) {
+                    this.dx.setValue(intValue);
+
+                    //int key = cont.getApp().getKeys();
+                    cont.getApp().getJTableKeyboard().setValueAt(input, cont.getApp().getKeys(), 0);
+                    cont.getApp().setKeys(cont.getApp().getKeys()+1);
+                    bandera = false;
+                } else {
+                    JOptionPane.showMessageDialog(null,"El valor ingresado debe ser un valor entre 0 y 255", "MiniPC", JOptionPane.WARNING_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null,"El valor ingresado debe ser un valor NÚMERICO entre 0 y 255", "MiniPC", JOptionPane.WARNING_MESSAGE);
+            }
+            
+            
+            
+        }
     }
     
     

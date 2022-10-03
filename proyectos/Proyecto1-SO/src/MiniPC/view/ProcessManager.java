@@ -205,6 +205,8 @@ public final class ProcessManager extends javax.swing.JFrame {
         this.jTableMemory.setModel(model);    
         this.jTableMemory.getColumnModel().getColumn(0).setMaxWidth(60);
         this.jTableMemory.getColumnModel().getColumn(0).setResizable(false);
+        this.jTableMemory.getColumnModel().getColumn(1).setPreferredWidth(330);
+        this.jTableMemory.getColumnModel().getColumn(1).setResizable(true);
         for (int i = 0; i < this.memorySize; i++) {
             jTableMemory.setValueAt(i+1, i, 0);
         }
@@ -221,6 +223,8 @@ public final class ProcessManager extends javax.swing.JFrame {
         this.jTableDisk.setModel(model);    
         this.jTableDisk.getColumnModel().getColumn(0).setMaxWidth(60);
         this.jTableDisk.getColumnModel().getColumn(0).setResizable(false);
+        this.jTableDisk.getColumnModel().getColumn(1).setPreferredWidth(330);
+        this.jTableDisk.getColumnModel().getColumn(1).setResizable(true);
         for (int i = 0; i < this.diskSize; i++) {
             jTableDisk.setValueAt(i+1, i, 0);
         }
@@ -577,6 +581,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableDisk.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane3.setViewportView(jTableDisk);
 
         jLabel2.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
@@ -706,6 +711,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableMemory.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane4.setViewportView(jTableMemory);
 
         jLabel17.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
@@ -831,7 +837,7 @@ public final class ProcessManager extends javax.swing.JFrame {
                                             .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
@@ -845,12 +851,13 @@ public final class ProcessManager extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel18)
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(32, 32, 32))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(32, 32, 32))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(22, 22, 22))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 922, javax.swing.GroupLayout.PREFERRED_SIZE)

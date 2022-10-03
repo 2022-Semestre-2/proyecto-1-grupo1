@@ -3,9 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/model/CPURegister.java</file>
             <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/MiniPC.java</file>
+            <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/model/MemoryRegister.java</file>
             <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/model/Instruction.java</file>
             <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/test/config.json</file>
+            <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/model/ProcessTime.java</file>
+            <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/model/CPU.java</file>
+            <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/view/Main_Menu.java</file>
+            <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/view/ProcessManager.java</file>
             <file>file:/C:/Users/Administrador/OneDrive/Escritorio/proyecto-1-grupo1/proyectos/Proyecto1-SO/src/MiniPC/model/PCB.java</file>
         </group>
     </open-files>
