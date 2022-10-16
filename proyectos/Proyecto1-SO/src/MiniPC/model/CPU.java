@@ -4,9 +4,15 @@
  */
 package MiniPC.model;
 
+import MiniPC.model.Algoritmos.SJF;
+import MiniPC.model.Algoritmos.Algoritmos;
 import MiniPC.controller.PCController;
+import MiniPC.model.Algoritmos.HRRN;
+import MiniPC.model.Algoritmos.RoundRobin;
+import MiniPC.model.Algoritmos.SRT;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Vector;
@@ -23,16 +29,135 @@ public class CPU {
     private int currentProcessIndex;
     private Queue<PCB> processQueue = new LinkedList<PCB>();
     private int processInstructionIndex;    
+    //Estado de los registros del PCB
     private  ArrayList<String> currentPcbRegistersStatus;
     private ArrayList<ProcessTime> stats = new ArrayList<ProcessTime>();
+    private Algoritmos algoritmo;
+    private Queue<PCB> originalQueue = null;
+    private HashMap<String,Algoritmos> hashAlgoritmos;
     
-    public CPU(String name){
+    
+    //para probar
+   
+    
+    public void initializeMapper(){
+        this.hashAlgoritmos = new HashMap<>();
+        this.hashAlgoritmos.put("SJF", new SJF());
+        this.hashAlgoritmos.put("RR", new RoundRobin());
+        this.hashAlgoritmos.put("HRRN", new HRRN());
+        this.hashAlgoritmos.put("SRT", new SRT());
+    }
+    public CPU(String name, String algoritmoAutilizar){
         this.currentProcessIndex = 0;
         this.processInstructionIndex = 0;
         this.cpuName = name;
+        this.initializeMapper();
+        this.algoritmo = this.hashAlgoritmos.get(algoritmoAutilizar);
+        
+        //this.loadPCBSArrival();
+        
+    }
+    private void diskValidation(Memory disk, Memory memory){
+        if(this.processQueue.isEmpty()){     
+                 if(!disk.getProcessesLoaded().isEmpty() && memory.PCBfits(disk.getProcessesLoaded().getFirst())){
+                           System.out.println("ProcessDisconectedfromdiskAll");                       
+                        PCB process = disk.getProcessesLoaded().getFirst();
+                        disk.deallocatePCB(process);                       
+                        
+                       this.addPCBtoQueue(process); 
+                       this.originalQueue.add(process);
+                       process.setCurrentCPU("CPU1");
+                        
+                       
+                       memory.allocatePCB(process);
+                       process.setStatus("Listo");
+                                                       
+                       
+                   }
+                    //memory.deallocatePCB(removed);                                             
+                        
+                    this.currentPcbRegistersStatus.clear();
+                   return;
+            }
+            if(!disk.getProcessesLoaded().isEmpty() && memory.PCBfits(disk.getProcessesLoaded().getFirst())){
+                           System.out.println("ProcessDisconectedfromdiskAll");                       
+                        PCB process = disk.getProcessesLoaded().getFirst();
+                        disk.deallocatePCB(process);
+                       
+                        
+                        this.addPCBtoQueue(process);  
+                        this.originalQueue.add(process);
+                        
+                        process.setCurrentCPU("CPU1");
+                       
+                        
+                        process.setStatus("Listo");
+                       
+                       memory.allocatePCB(process);
+                       
+                   }
+            
+            
+             
+    }
+     //
+// Aquí ejecuta la instrucción pero todo es por defecto hasta que se cambie lo de memioria
+
+    public void executeInstructionAlgorithm(Memory memory,Memory disk, PCController cont){
+        
+        
+        
+        
+        if(this.processQueue.isEmpty()){
+            return;
+        }
+        if(this.originalQueue==null){
+            this.originalQueue = new LinkedList<PCB>();
+            for(PCB pcb : this.processQueue){
+                this.originalQueue.add(pcb);
+            }
+                
+        }
+         //METODO 
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+        PCB pcb = this.algoritmo.executeInstruction(this.processQueue, cont);
+        
+        
+        this.currentPcbRegistersStatus = this.algoritmo.getStatus();
+        int i = 0 ;
+        int index  = i;
+        
+        for(PCB proceso: this.originalQueue){
+                if(proceso.equals(pcb)){
+                    index = i;
+                    break;
+                }
+                i++;
+         }
+        this.currentProcessIndex = index;      
+        System.out.println(index);
+        this.processInstructionIndex++;
+            
+        if(algoritmo.programIsFinished()){
+            this.processQueue.remove(pcb);
+            pcb.setStatus("Fin");
+            memory.deallocatePCB(pcb);              
+            
+            this.diskValidation(disk, memory);
+            
+            
+       }
+        
+       
+       
+        
     }
     
     
+         
     public void startTime(ProcessTime time){
         LocalDateTime locaDate = LocalDateTime.now();
         int hours  = locaDate.getHour();
@@ -53,7 +178,7 @@ public class CPU {
     }
     
     
-    public void executeInstruction(Memory memory,Memory disk,CPU cpu1, CPU cpu2, PCController cont){
+    public void executeInstruction(Memory memory,Memory disk, PCController cont){
         ProcessTime time = new ProcessTime();
         startTime(time);
         if(this.processQueue.isEmpty()){
@@ -74,15 +199,11 @@ public class CPU {
                  if(!disk.getProcessesLoaded().isEmpty() && memory.PCBfits(disk.getProcessesLoaded().getFirst())){
                            System.out.println("ProcessDisconectedfromdiskAll");                       
                         PCB process = disk.getProcessesLoaded().getFirst();
-                        disk.deallocatePCB(process);
-                       int oneOrCero = (int)Math.round(Math.random());
-                        if(oneOrCero==1){
-                            cpu1.addPCBtoQueue(process); 
-                            process.setCurrentCPU("CPU1");
-                        } else {
-                            cpu2.addPCBtoQueue(process);
-                            process.setCurrentCPU("CPU2");                            
-                        }
+                        disk.deallocatePCB(process);                       
+                        
+                       this.addPCBtoQueue(process); 
+                       process.setCurrentCPU("CPU1");
+                        
                        
                        memory.allocatePCB(process);
                        process.setStatus("Listo");
@@ -99,14 +220,11 @@ public class CPU {
                            System.out.println("ProcessDisconectedfromdiskAll");                       
                         PCB process = disk.getProcessesLoaded().getFirst();
                         disk.deallocatePCB(process);
-                       int oneOrCero = (int)Math.round(Math.random());
-                        if(oneOrCero==1){
-                            cpu1.addPCBtoQueue(process);  
+                       
+                        
+                        this.addPCBtoQueue(process);  
                             process.setCurrentCPU("CPU1");
-                        } else {
-                            cpu2.addPCBtoQueue(process);                            
-                            process.setCurrentCPU("CPU2");
-                        }
+                       
                         
                         process.setStatus("Listo");
                        
@@ -144,7 +262,7 @@ public class CPU {
             
             
         this.currentPcb.setStatus("Exec");
-        this.currentPcbRegistersStatus = this.currentPcb.executeInstruction(cont);                
+        this.currentPcbRegistersStatus = this.currentPcb.executeInstruction(cont); //array con el estado del proceso     
         
         this.processInstructionIndex++;
     }
@@ -152,28 +270,24 @@ public class CPU {
         return this.processQueue;
     }
     public void executeAll(Memory memory,Memory disk,CPU cpu1, CPU cpu2, PCController cont){
-        while(!this.processQueue.isEmpty()){            
-            
+        
+        
+        while(!this.processQueue.isEmpty()){                        
+        
             if(this.cpuName.equals("CPU1")){
-                this.executeInstruction(memory, disk, cpu1, cpu2, cont);            
+                
+                this.executeInstructionAlgorithm(memory, disk, cont);            
+//                        
+                
                 cont.updatePCBStatusTable();
                 cont.loadPCBstoMem();                                        
                 if(cpu1.getProcessInstructionIndex()!=0){
                     cont.getApp().getExecutionTables()[0].getModel().setValueAt(" ", cpu1.getCurrentProcessIndex(),cpu1.getProcessInstructionIndex());     
                 }                
                 cont.updateCPUComponents(cpu1);
-            } else {
-                this.executeInstruction(memory, disk, cpu1, cpu2, cont);            
-                cont.updatePCBStatusTable();
-                cont.loadPCBstoMem();          
-                 if(cpu2.getProcessInstructionIndex()!=0){
-                    cont.getApp().getExecutionTables()[1].getModel().setValueAt(" ", cpu2.getCurrentProcessIndex(),cpu2.getProcessInstructionIndex());     
-                }    
-                
-                cont.updateCPUComponents(cpu2);                
-                
-            }                        
-            
+//                        long i = 0 ;
+//                while(i < 10000000){i++;};
+            }
         }
         
     }
@@ -196,7 +310,8 @@ public class CPU {
             
             this.currentPcb.setStatus("Listo");
         }
-        this.processQueue.add(pcb);         
+        this.processQueue.add(pcb);        
+        
 
     }
     

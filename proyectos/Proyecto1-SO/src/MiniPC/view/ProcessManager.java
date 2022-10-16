@@ -5,18 +5,26 @@
 package MiniPC.view;
 
 import MiniPC.controller.PCController;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Vector;
-import javax.swing.JFileChooser;
-
-import javax.swing.JOptionPane;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.DefaultCaret;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 /**
@@ -39,7 +47,7 @@ public final class ProcessManager extends javax.swing.JFrame {
     public ProcessManager() {
            initComponents(); 
         loadJSONfile();        
-        modifyProcessExecutionTable(3);
+        modifyProcessExecutionTable(10);
         loadMemoryTable();
         loadDiskTable();
         loadProcessTable();
@@ -906,12 +914,13 @@ public final class ProcessManager extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btmLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmLoadActionPerformed
-       
-        
-       
+
+      
        
     }//GEN-LAST:event_btmLoadActionPerformed
-
+    public JButton getButtonLoad(){
+        return this.btmLoad;
+    }
     private void jInputKeyboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jInputKeyboardActionPerformed
         /*
         System.out.println(evt.getActionCommand());

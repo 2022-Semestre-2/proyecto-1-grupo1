@@ -3,22 +3,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package MiniPC.controller;
-
 import MiniPC.model.CPU;
 import MiniPC.model.FileLoader;
 import MiniPC.model.Memory;
 import MiniPC.model.PCB;
-import MiniPC.model.ProcessTime;
 import MiniPC.model.Register;
 import MiniPC.view.ProcessManager;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Queue;
+import java.util.TimerTask;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -29,7 +37,7 @@ public class PCController {
     //Mostrar los procesos en 
     //Cola de trabajo
     private CPU cpu1;
-    private CPU cpu2;    
+        
     private ProcessManager app;
     private Memory memory;
     private JTable memoryTable;    
@@ -54,8 +62,8 @@ public class PCController {
     
     public void init(){
         this.loadApp();        
-        this.cpu1 = new CPU("CPU1");
-        this.cpu2 = new CPU("CPU2");
+        
+        this.cpu1 = new CPU("CPU1","SJF");        
         this.btnStepByStep = this.app.getStepByStep();
         this.btnFileLoad = this.app.getLoadBtn();
         this.btnStats = this.app.getButtonStats();
@@ -89,6 +97,7 @@ public class PCController {
                 btnStats(evt);
             }
         });
+        
         this.memory = new Memory(app.getMemSize());
         this.disk = new Memory(app.getDiskSize());
     }
@@ -99,8 +108,8 @@ public class PCController {
         this.app.reset();
         this.pcbList.clear();
         updatePCBStatusTable();
-        this.cpu1 = new CPU("CPU1");
-        this.cpu2 = new CPU("CPU2");
+        this.cpu1 = new CPU("CPU1","SJF");
+        
         
 
     }
@@ -111,12 +120,96 @@ public class PCController {
             process += this.cpu1.getStats().get(i).toString();
             process += "\n";
         }
+        /**
         process += "\n-CPU2-\n";
         for (int i = 0; i < this.cpu2.getStats().size(); i++) {
             process += this.cpu2.getStats().get(i).toString();
             process += "\n";
         }
+        */
         JOptionPane.showMessageDialog(app, process, "MiniPC", 1);
+    }
+    private void loadPCBArrival(){  
+
+                JFrame frame = new JFrame("Porfavor ingrese el tiempo de arrivo para los procesos");
+        
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                try 
+                {
+                   UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception e) {
+                   e.printStackTrace();
+                }
+                
+                
+                
+                
+                
+                
+//                
+                
+                JPanel inputpanel = new JPanel();       
+                
+
+                JScrollPane scroller = new JScrollPane(inputpanel);
+                scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                inputpanel.setLayout(new GridLayout(10,10));
+                //inputpanel.add(new JLabel ("Porfavor ingrese el tiempo de arrivo para los procesos"));   
+                
+                
+                int i = 0;
+                ArrayList<JTextField> inputs = new ArrayList<>();
+                for(PCB proc: this.pcbList){
+                    JTextField input = new JTextField(20);
+                    JLabel label = new JLabel("Proceso "+Integer.toString(i+1)+" \n" +proc.getFileName() );
+                    
+                    inputpanel.add(label);                    
+                    
+                    inputpanel.add(input);          
+                    inputs.add(input);
+                    
+                    
+                    input.requestFocus();
+                    i++;
+                }
+                
+                
+                
+                
+                
+                
+                
+                //inputpanel.add(inputpanel);
+                
+                JButton boton = new JButton("Confirmar");
+                boton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                handleInputArrival(evt,inputs,frame);
+            }
+        });
+                inputpanel.add(boton);
+                
+                frame.getContentPane().add(BorderLayout.CENTER, inputpanel);
+                frame.pack();
+                frame.setLocationByPlatform(true);
+                frame.setVisible(true);
+                frame.setResizable(false);
+                
+                
+        
+       
+       
+    }  
+    private void handleInputArrival(java.awt.event.ActionEvent evt,ArrayList<JTextField> inputs ,JFrame frame) {
+        int i = 0;
+        for (JTextField input: inputs){
+            this.pcbList.get(i).setArrivalTime(Integer.parseInt(input.getText()));
+            System.out.println(this.pcbList.get(i).getArrivalTime());
+            i++;
+        }
+        frame.setVisible(false);
+        
     }
     
     private void loadApp(){
@@ -151,10 +244,10 @@ public class PCController {
                 // Se verifica si el archivo es valido 
                 
                 if (testFile(fileList[i].toString())) {
-                //Se agregan a la cola de espera del CPU
-                    int oneOrCero = (int)Math.round(Math.random());
-                    if(oneOrCero==1){
+                //Se agregan a la cola de espera del CPU                    
+                    
                         PCB pcb = new PCB("Listo"); 
+                        pcb.setFileName(fileList[i].toString());
                         
                         pcb.setLoader(fileList[i].toString());                                                        
                         if(pcb.getPCBData().size()+pcb.getInstructions().size() >this.memory.getSize()){
@@ -163,36 +256,21 @@ public class PCController {
                         }
                         
                         this.pcbList.add(pcb);
-                        if(!this.memory.allocatePCB(pcb)){
+                        if(!this.memory.allocatePCB(pcb)){                            
                             this.disk.allocatePCB(pcb);
                             pcb.setStatus("Prep");
                             
                         }else {
                             this.cpu1.addPCBtoQueue(pcb);
                         }
-                        
-                    } else {
-                        PCB pcb = new PCB("Listo");
-                        pcb.setLoader(fileList[i].toString());                                    
-                        if(pcb.getPCBData().size()+pcb.getInstructions().size() >this.memory.getSize()){
-                            JOptionPane.showMessageDialog(this.app, "El archivo " + fileList[i] + " no se cargó debido a que su tamaño no cabe en memoria\n","MiniPC", 0);
-                            continue;
-                        }
-                        this.pcbList.add(pcb);                        
-                        //Si no cabe en memoria se coloca en disco
-                        if(!this.memory.allocatePCB(pcb)){
-                            this.disk.allocatePCB(pcb);
-                            pcb.setStatus("Prep");
-                            
-                        } else {
-                            this.cpu2.addPCBtoQueue(pcb);
-                        }
-                    }
+                                                                   
+                    
                    this.updatePCBStatusTable();
                 }
             }            
         }    
         loadPCBstoMem();                
+     //   cpu1.loadPCBSArrival();
     }
     
     private boolean testFile(String filepath) {
@@ -246,14 +324,28 @@ public class PCController {
         // Retrieve the selected files.
         File[] files = chooser.getSelectedFiles();        
         this.filesToPCB(files);
+        this.loadPCBArrival();
         
        
        
     }               
     private void btnExeAllActionPerformed(java.awt.event.ActionEvent evt) { 
-        while(!this.cpu1.getProcesesQueue().isEmpty() || !this.cpu2.getProcesesQueue().isEmpty()){
-            this.cpu1.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);
-             this.cpu2.executeAll(this.memory, this.disk, this.cpu1, this.cpu2, this);        
+        while(!this.cpu1.getProcesesQueue().isEmpty() ){
+            
+                 this.cpu1.executeAll(this.memory, this.disk, this.cpu1, this.cpu1, this); 
+                
+            
+
+                
+                    // here goes your code to delay
+            
+        
+           
+            
+            
+            
+                  // Your database code here            
+             
         }
         
     }        
@@ -264,7 +356,7 @@ public class PCController {
     private void btnStepActionPerformed(java.awt.event.ActionEvent evt) {                  
         //Coger un proceso y ejecutarlo en CPU|
         PCController c = this;
-        this.cpu1.executeInstruction(this.memory, this.disk,this.cpu1,this.cpu2,c);
+        this.cpu1.executeInstructionAlgorithm (this.memory, this.disk,c);
         this.updatePCBStatusTable();
         this.loadPCBstoMem();
         if(this.cpu1.getProcessInstructionIndex()!=0){
@@ -272,14 +364,7 @@ public class PCController {
         }
         
         this.updateCPUComponents(this.cpu1);
-        this.cpu2.executeInstruction(this.memory,this.disk,this.cpu1,this.cpu2, c);
-        this.loadPCBstoMem();
-        this.updatePCBStatusTable();
-        if(this.cpu2.getProcessInstructionIndex()!=0){
-            this.app.getExecutionTables()[1].getModel().setValueAt(" ", this.cpu2.getCurrentProcessIndex(), this.cpu2.getProcessInstructionIndex());
-        }    
-        
-        this.updateCPUComponents(this.cpu2);
+                
         
         
         

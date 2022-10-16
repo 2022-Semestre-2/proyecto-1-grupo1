@@ -67,9 +67,11 @@ public class PCB {
     private FileLoader loader;
     private String currentCPU;
     private String status;    
+    private int rafaga;
+    private int arrivalTime;
     private int memoryStartingIndex;
     private Instruction currentInstructionWeight;
-    
+    private String fileName;
     private boolean programFinished = false;   
     //Bandera para el comparador cmp ax, dx. Si son iguales la bandera se pone en true y por ende se usara el comparador
     private boolean comparatorFlag = false;
@@ -77,6 +79,12 @@ public class PCB {
     private Stack<Integer> stack = new Stack();    
     //CPU_Menu menu = new CPU_Menu();
     private boolean flag09H = false;
+    public void setFileName(String file){
+        this.fileName = file;
+    }
+    public String getFileName(){
+        return this.fileName;
+    }
     
     
     private int duration = 0;
@@ -96,6 +104,16 @@ public class PCB {
     public void setCurrentCPU(String cpu){
         this.currentCPU = cpu;
     }
+    public int getArrivalTime(){
+        return this.arrivalTime;
+    }
+    
+    public void setArrivalTime(int art){
+        this.arrivalTime=art;
+    }
+    public int getRafaga(){
+        return this.rafaga;
+    }
      public PCB(String status, String currentCPU){        
          this.currentInstruction = 0;
          this.status = status;
@@ -103,7 +121,8 @@ public class PCB {
         this.registerAddressMapper.put(1, ax);
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
-        this.registerAddressMapper.put(4, dx);        
+        this.registerAddressMapper.put(4, dx);
+        
                                
     }
      public PCB(String status){        
@@ -113,6 +132,7 @@ public class PCB {
         this.registerAddressMapper.put(2, bx);
         this.registerAddressMapper.put(3, cx);
         this.registerAddressMapper.put(4, dx);        
+        
                                
     }
      
@@ -207,6 +227,7 @@ public class PCB {
     
     public void setLoader(String file){
         this.loader = new FileLoader(file);
+        this.rafaga = this.getPCBinstrucctionSize();
     }
     public int getProgramCounter(){
         return this.pc;
@@ -299,7 +320,7 @@ public class PCB {
             
             this.pc++;
             this.currentInstruction++;
-            
+            this.rafaga--;
         
             
             return list;
@@ -308,6 +329,7 @@ public class PCB {
             
             
     }
+        
     public int getPCBinstrucctionSize(){
         return this.loader.getInstrucionSet().size();
     }

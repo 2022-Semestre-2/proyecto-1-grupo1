@@ -48,11 +48,11 @@ public class FileLoader {
             String line = reader.readLine();
             int linePos = 0;
             while(line != null) {          
-                if(!this.validGrammar(line,linePos)){                                                                               
+                if(!this.validGrammar(line.toLowerCase(),linePos)){                                                                               
                     countErrors++;
                     return;
                 } 
-                this.instructionSet.add(processInstruction(line));
+                this.instructionSet.add(processInstruction(line.toLowerCase()));
                 linePos++;
                 line = reader.readLine();
                 
